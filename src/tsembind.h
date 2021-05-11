@@ -15,16 +15,12 @@ struct FunctionDeclaration {
 };
 	
 std::vector<FunctionDeclaration> functionDeclarations;
-std::string getTypescriptDeclarations() {
-	std::stringstream ss;
-	for (const auto &functionDeclaration : functionDeclarations) {
-		ss << functionDeclaration.name << std::endl;
-		for (const auto typeId : functionDeclaration.types) {
-			ss << typeId << " ";
-		}
-		ss << std::endl;
-	}
-	return ss.str();
+emscripten::val getTypescriptDeclarations() {
+	auto declarations = emscripten::val::object();
+
+	declarations.set("x","y");
+
+	return declarations;
 }
 
 template<typename ReturnType, typename... Args, typename... Policies>
