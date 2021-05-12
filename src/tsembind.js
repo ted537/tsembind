@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-
+const path = require('path')
 const {injectBindings} = require('./inject.js')
 const {declarationsForRegistry} = require('./declarations.js')
 
@@ -26,7 +25,8 @@ const getDeclarations = module => {
 }
 
 const generateTypescriptBindings = async inputFilename => {
-	const module = await require(inputFilename)();
+	const absoluteInputFilename = path.resolve(process.cwd(),inputFilename)
+	const module = await require(absoluteInputFilename)();
 	return getDeclarations(module)
 }
 

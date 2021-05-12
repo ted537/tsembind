@@ -44,7 +44,7 @@ const declarationsForRegistry = (module,registry) => {
 		registry.functions.
 			map(getFunctionDeclaration(module,registry))
 
-	].flat().join('\n')+'\n'
+	].flat().join('\n')
 }
 
 module.exports = {declarationsForRegistry}
