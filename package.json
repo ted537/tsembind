@@ -1,0 +1,26 @@
+{
+  "name": "tsembind",
+  "version": "1.0.0",
+  "description": "EMBind Typescript Declarations Generator",
+  "main": "src/tsembind.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ted537/tsembind.git"
+  },
+  "author": "ted537",
+  "license": "ISC",
+  "bin": {
+    "tsembind": "./src/tsembind.js"
+  },
+  "bugs": {
+    "url": "https://github.com/ted537/tsembind/issues"
+  },
+  "homepage": "https://github.com/ted537/tsembind#readme"
+}

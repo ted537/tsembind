@@ -1,8 +1,16 @@
+cmake_minimum_required(VERSION 3.16)
+
 project(tsembind)
 include_directories(src)
 
-add_executable(simplefunc test/simplefunc.cc)
-target_link_options(simplefunc PUBLIC
+add_executable(examplelib test/examplelib.cc)
+target_link_options(examplelib PUBLIC
 	-s MODULARIZE --bind
 	-sEXPORTED_RUNTIME_METHODS=[registeredTypes] 
+)
+
+set_property(
+	TARGET examplelib
+	PROPERTY RUNTIME_OUTPUT_DIRECTORY
+	${PROJECT_SOURCE_DIR}/lib
 )

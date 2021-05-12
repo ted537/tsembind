@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const {injectBindings} = require('./inject.js')
 const {declarationsForRegistry} = require('./declarations.js')
 
@@ -25,3 +27,10 @@ const getDeclarations = module => {
 }
 
 module.exports = {inject, getDeclarations}
+
+const generateBindings = () => {
+	console.log("generating bindings...")
+}
+if (require.main === module) {
+	generateBindings()
+}

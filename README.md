@@ -3,16 +3,14 @@
 Generate `.d.ts` files using your existing Emscripten projects.
 Re-compiling is not necessary!
 
+Installation:
+```
+npm i -g git+https://github.com/ted537/tsembind.git
+```
+
 Usage:
 ```javascript
-const {inject, getDeclarations} = require('tsembind')
-async function main() {
-	const module = await require('./your-embind-wasm-module.js')
-	const declaratios = getDeclarations(module)
-	// in practice, save them to a file probably
-	console.log(declarations)
-}
-main()
+tsembind my-embind-lib.js -o [my-emlib.d.ts]
 ```
 
 ## How it works
