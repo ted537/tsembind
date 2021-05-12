@@ -19,15 +19,12 @@ const wrapRegisterClass = (registry,f) => (...args) => {
 		baseClassRawType
 	];
 	for (const type of types) registry.types[type] = name;
-	console.log("registering class")
-	console.log(...args)
 	registry.classes.push({name,methods:[]})
 	return f(...args)
 }
 
 const wrapRegisterInt = (registry,f) => (...args) => {
 	const [primitiveType, name, size, minRange, maxRange] = args;
-	console.log("registering int")
 	registry.types[primitiveType] = name
 	return f(...args)
 }

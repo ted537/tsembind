@@ -23,7 +23,6 @@ const heap32VectorToArray = module => (count, firstElement) => {
 const typeIdToTypeName = (module,registry) => typeId => {
 	const ptr = registry.types[typeId]
 	const str = readLatin1String(module)(ptr);
-	console.log("read typename "+str)
 	return str;
 }
 
@@ -32,14 +31,12 @@ const getFunctionDeclaration = (module,registry) => funcInfo => {
 	// TODO
 	const nameStr = readLatin1String(module)(name)
 	const argTypes = heap32VectorToArray(module)(argCount, rawArgTypesAddr);
-	console.log(`argtypes for ${name}(): ${argTypes}`)
 	const argTypeNames = argTypes.map(typeIdToTypeName(module,registry))
 	const [returnType,...parameterTypes] = argTypeNames;
 	return `declare function ${nameStr}(${parameterTypes}): ${returnType};`
 }
 
 const declarationsForRegistry = (module,registry) => {
-	console.log(registry)
 	return [
 		[
 			'type int = Number;'

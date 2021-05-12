@@ -19,9 +19,8 @@ const {input,output} = program.opts();
 if (!fs.existsSync(input)) {
 	throw `Input file ${input} does not exist!!!`
 }
-const actualOutput = output ? output : changeExtension(input,'.d.ts')
-console.log('writing output to '+actualOutput)
 
-generateTypescriptBindings(process.cwd()+'/'+input).then(
-	bindings => fs.writeFileSync(actualOutput, bindings)
-);
+generateTypescriptBindings(process.cwd()+'/'+input).then(bindings => {
+	if (output) fs.writeFileSync(output, bindings) 
+	else console.log(bindings)
+});
