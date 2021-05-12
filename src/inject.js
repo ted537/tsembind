@@ -14,9 +14,14 @@ const wrapRegisterClass = (registry,f) => (...args) => {
 		downcastSignature, downcast,
 		name, destructorSignature, rawDestructor
 	] = args;
-	registry.types[rawType] = name
+	const types = [
+		rawType, rawPointerType, rawConstPointerType,
+		baseClassRawType
+	];
+	for (const type of types) registry.types[type] = name;
 	console.log("registering class")
 	console.log(...args)
+	registry.classes.push({name,methods:[]})
 	return f(...args)
 }
 
