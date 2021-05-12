@@ -1,7 +1,7 @@
-#include "tsembind.h"
+#include <emscripten/bind.h>
 
 int doubleIt(int x) {return x*2;}
 
 EMSCRIPTEN_BINDINGS(simplefunc) {
-	tsembind::function("doubleIt",&doubleIt);
+	emscripten::function("doubleIt",&doubleIt);
 }
