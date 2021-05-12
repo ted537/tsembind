@@ -17,10 +17,13 @@
   "author": "ted537",
   "license": "ISC",
   "bin": {
-    "tsembind": "./src/tsembind.js"
+    "tsembind": "./src/cmd.js"
   },
   "bugs": {
     "url": "https://github.com/ted537/tsembind/issues"
   },
-  "homepage": "https://github.com/ted537/tsembind#readme"
+  "homepage": "https://github.com/ted537/tsembind#readme",
+  "dependencies": {
+    "commander": "^7.2.0"
+  }
 }
