@@ -4,7 +4,7 @@ Generate `.d.ts` files using your existing Emscripten projects.
 Re-compiling is not necessary!
 
 Usage:
-```
+```javascript
 const {inject, getDeclarations} = require('tsembind')
 async function main() {
 	const module = await require('./your-embind-wasm-module.js')
