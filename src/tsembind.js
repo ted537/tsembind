@@ -13,8 +13,7 @@ const wrapWebAssemblyInit = init => async (binary,info) => {
 	return result;
 }
 
-const inject = () =>
-	WebAssembly.instantiate = wrapWebAssemblyInit(WebAssembly.instantiate)
+WebAssembly.instantiate = wrapWebAssemblyInit(WebAssembly.instantiate)
 
 // note that the Emscripten Module is NOT the WebAssembly Module.
 // However, since they share some components, we can find a mapping
@@ -26,4 +25,9 @@ const getDeclarations = module => {
 	return declarationsForRegistry(module,registry)
 }
 
-module.exports = {inject, getDeclarations}
+const generateTypescriptBindings = async inputFilename => {
+	const module = await require(inputFilename)();
+	return getDeclarations(module)
+}
+
+module.exports = {generateTypescriptBindings}

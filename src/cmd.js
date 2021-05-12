@@ -2,6 +2,7 @@
 const fs = require('fs')
 const path = require('path')
 const {program} = require('commander')
+const {generateTypescriptBindings} = require('./tsembind.js')
 program.version('0.0.1')
 
 program
@@ -15,3 +16,7 @@ if (!fs.existsSync(input)) {
 }
 const actualOutput = output ? output : path.basename(input,'.js') + '.d.ts'
 console.log('writing output to '+actualOutput)
+
+generateTypescriptBindings(process.cwd()+'/'+input).then(
+	bindings => fs.writeFileSync(output, bindings)
+);
