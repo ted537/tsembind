@@ -1,7 +1,6 @@
 const registries = new Map();
 
 const wrapRegisterFunction = (registry,f) => function(...args) {
-	console.log("registering function")
 	registry.functions.push({
 		returnType:args[0],
 		parameterTypes: args.slice(1)
@@ -11,6 +10,7 @@ const wrapRegisterFunction = (registry,f) => function(...args) {
 
 const wrapRegisterClass = (registry,f) => (...args) => {
 	console.log("registering class")
+	console.log(...args)
 	return f(...args)
 }
 
@@ -30,9 +30,9 @@ const injectBindings = info => {
 	return {registry, injectedInfo}
 }
 
-const wrapWebAssemblyInit = originalFunction => async (binary,info) => {
+const wrapWebAssemblyInit = init => async (binary,info) => {
 	const {registry,injectedInfo} = injectBindings(info)
-	const result = await originalFunction(binary,injectedInfo)
+	const result = await init(binary,injectedInfo)
 	const {module,instance} = result;
 	registries.set(instance.exports,registry)
 	return result;
@@ -41,7 +41,14 @@ const wrapWebAssemblyInit = originalFunction => async (binary,info) => {
 const inject = () =>
 	WebAssembly.instantiate = wrapWebAssemblyInit(WebAssembly.instantiate)
 
-const getDeclarations = module =>
+// note that the Emscripten Module is NOT the WebAssembly Module.
+// However, since they share some components, we can find a mapping
+const registryForEmscriptenModule = module =>
 	registries.get(module.asm)
+
+const getDeclarations = module => {
+	const registry = registryForEmscriptenModule(module);
+	return registry;
+}
 
 module.exports = {inject, getDeclarations}
