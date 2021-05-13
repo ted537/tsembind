@@ -24,13 +24,8 @@ to compile the type information.
 
 ## Development
 
-First, Install EMSDK. Then, run the standard cmake commands in this repo.
+Install EMSDK, make sure everything is on the path, and then run `npm build`
 
-```
-mkdir build
-cd build
-emcmake cmake ..
-emmake make
-```
+To debug, run `npm link` followed by `tsembind lib/examplelib.js`
 
-To test, run `npm link` followed by `tsembind lib/examplelib.js`
+To run the automatic tests, run `npm test`
