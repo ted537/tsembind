@@ -23,7 +23,9 @@ const heap32VectorToArray = module => (count, firstElement) => {
 const typeIdToTypeName = (module,registry) => typeId => {
 	const ptr = registry.types[typeId]
 	const str = readLatin1String(module)(ptr);
-	return str;
+	// FIXME kind of sketchy, 
+	// should probably do this comparison somewhere else
+	return str || "void"
 }
 
 // can't give names here unfortunately
