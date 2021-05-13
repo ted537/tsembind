@@ -6,8 +6,11 @@ include_directories(src)
 add_executable(examplelib test/examplelib.cc)
 add_executable(voidfunc test/voidfunc.cc)
 add_executable(return_int test/return_int.cc)
+add_executable(return_float test/return_float.cc)
 
-foreach(executable IN ITEMS examplelib voidfunc return_int)
+foreach(executable IN ITEMS 
+		examplelib voidfunc return_int return_float
+)
 	target_link_options(${executable} PUBLIC
 		-s MODULARIZE --bind
 	)
