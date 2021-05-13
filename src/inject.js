@@ -1,3 +1,11 @@
+const {readLatin1String, heap32VectorToArray} = require('./embind.js')
+const {CamelCase} = require('./str.js')
+
+const readName = name => module => 
+	readLatin1String(module)(name)
+const readNameCamelCased = name => module =>
+	CamelCase(readLatin1String(module)(name))
+
 // inject required typing info during register_function() and similar
 const wrapRegisterFunction = (registry,f) => (...args) => {
 	const [name,argCount, rawArgTypesAddr, signature, rawInvoker,fn] = args;
@@ -18,7 +26,8 @@ const wrapRegisterClass = (registry,f) => (...args) => {
 		rawType, rawPointerType, rawConstPointerType,
 		baseClassRawType
 	];
-	for (const type of types) registry.types[type] = name;
+
+	for (const type of types) registry.types[type] = readName(name)
 	registry.classes[rawType] = {name,functions:[]}
 	return f(...args)
 }
@@ -33,9 +42,16 @@ const wrapRegisterClassFunction = (registry,f) => (...args) => {
 
 const wrapRegisterInt = (registry,f) => (...args) => {
 	const [primitiveType, name, size, minRange, maxRange] = args;
-	registry.types[primitiveType] = name
-	registry.numbers.push(name)
+	const getName = readNameCamelCased(name)
+	registry.types[primitiveType] = getName
+	registry.numbers.push(getName)
 	return f(...args)
+}
+
+const wrapRegisterVoid = (registry,f) => (...args) => {
+	const [rawType, name] = args;
+	registry.types[rawType] = () => "void"
+	return f(...args);
 }
 
 const injectBindings = info => {
@@ -47,7 +63,8 @@ const injectBindings = info => {
 		_embind_register_function,
 		_embind_register_class,
 		_embind_register_class_function,
-		_embind_register_integer
+		_embind_register_integer,
+		_embind_register_void
 	} = info.env;
 	const injectedEnv = {...info.env,
 		_embind_register_function: 
@@ -57,7 +74,9 @@ const injectBindings = info => {
 		_embind_register_integer:
 			wrapRegisterInt(registry,_embind_register_integer),
 		_embind_register_class_function:
-			wrapRegisterClassFunction(registry,_embind_register_class_function)
+			wrapRegisterClassFunction(registry,_embind_register_class_function),
+		_embind_register_void:
+			wrapRegisterVoid(registry,_embind_register_void)
 	}
 	const injectedInfo = {...info,env:injectedEnv}
 	return {registry, injectedInfo}

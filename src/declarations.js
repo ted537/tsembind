@@ -1,31 +1,13 @@
 // transform registry into typescript declarations
+const {readLatin1String, heap32VectorToArray} = require('./embind.js')
 
-// duplicate definitions from embind.js because
-// the original definitions arehidden behind closures
-const readLatin1String = module => ptr => {                                     
-    let str = "";                                                               
-    let c = ptr;                                                                
-    while (module.HEAPU8[c]) {                                                  
-        str += String.fromCharCode(module.HEAPU8[c]);                           
-        ++c;                                                                    
-    }                                                                           
-    return str;                                                                 
-}
-
-const heap32VectorToArray = module => (count, firstElement) => {
-	const array = [];                                                           
-	for (let i = 0; i < count; i++) {                                         
-	  array.push(module.HEAP32[(firstElement >> 2) + i]);                          
-	}                                                                         
-	return array;                                                             
-} 
-
+// TODO hijack register void
 const typeIdToTypeName = (module,registry) => typeId => {
-	const ptr = registry.types[typeId]
-	const str = readLatin1String(module)(ptr);
-	// FIXME kind of sketchy, 
-	// should probably do this comparison somewhere else
-	return str || "void"
+	// TODO assert that we only have one void type
+	if (!(typeId in registry.types))
+		throw new Error(`typeId=${typeId} not found in registry`)
+
+	return registry.types[typeId](module)
 }
 
 // can't give names here unfortunately
@@ -66,17 +48,10 @@ const getClassDeclaration = (module,registry) => classInfo => {
 	].flat().join('\n')
 }
 
-const capitalize = text =>
-	text[0].toUpperCase() + text.slice(1)
-
-const CamelCase = words =>
-	words.split(' ').map(capitalize).join('')
 
 // TS is not responsible for enforcing number sizes (int8 vs int32 etc)
 const declarationForNumber = (module,registry) => name => {
-	const humanName = readLatin1String(module)(name)
-	const camelCased = CamelCase(humanName)
-	return `type ${camelCased} = Number`
+	return `type ${name(module)} = Number`
 }
 
 const declarationsForRegistry = (module,registry) => {
