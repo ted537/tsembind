@@ -8,6 +8,13 @@ const findClassDeclaration = async libname => {
 	return lines.slice(lineIndex).join('\n')
 }
 
+const findFuncDeclaration = async libname => {
+	const text = await generateTypescriptBindings(libname)
+	const lines = text.split('\n')
+	const lineIndex = lines.findIndex(line=>line.includes('declare function'))
+	return lines[lineIndex]
+}
+
 const normalize = str => str.replace(/\s+/g, ' ')
 const assertEqualNormalized = (a,b) => assert.equal(normalize(a),normalize(b))
 
@@ -45,6 +52,14 @@ describe('getTypescriptBindings (for classes)', ()=> {
 			assertEqualNormalized(
 				await findClassDeclaration('lib/constructor_args.js'),
 				'declare class A { constructor(arg0: Int, arg1: Float); }'
+			)
+		}
+	)
+	it('should generate a declaration using a shared pointer',
+		async ()=>{
+			assertEqualNormalized(
+				await findFuncDeclaration('lib/smartptr.js'),
+				'function MakeSharedA() : A;'
 			)
 		}
 	)

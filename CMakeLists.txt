@@ -11,6 +11,7 @@ add_executable(return_bool test/return_bool.cc)
 add_executable(identity test/identity.cc)
 add_executable(sum test/sum.cc)
 add_executable(emptyclass test/empty_class.cc)
+add_executable(smartptr test/smart_ptr.cc)
 add_executable(emptyenum test/empty_enum.cc)
 add_executable(enum1 test/enum1.cc)
 add_executable(enum2 test/enum2.cc)
@@ -27,6 +28,7 @@ foreach(executable IN ITEMS
 		# classes
 		emptyclass constructor constructor_args
 		classmethod classmethodmultiparam
+		smartptr
 		# enums
 		emptyenum enum1 enum2
 )
