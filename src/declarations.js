@@ -14,7 +14,7 @@ const typeIdToTypeName = (module,registry) => typeId => {
 const typeNamesToParameters = typenames =>
 	typenames.map(
 		(typename,idx) => `arg${idx}: ${typename}`
-	)
+	).join(', ')
 
 const getFunctionDeclaration = (module,registry) => funcInfo => {
 	const {name,argCount,rawArgTypesAddr} = funcInfo;

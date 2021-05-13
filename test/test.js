@@ -35,5 +35,13 @@ describe('getTypescriptBindings', ()=> {
 			)
 		}
 	)
+	it('should generate a declaration for an int sum function',
+		async ()=>{
+			assert.equal(
+				lastLine(await generateTypescriptBindings('lib/sum.js')),
+				'declare function f(arg0: Int, arg1: Int): Int;'
+			)
+		}
+	)
 })
 
