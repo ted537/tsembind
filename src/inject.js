@@ -34,13 +34,14 @@ const wrapRegisterClassFunction = (registry,f) => (...args) => {
 const wrapRegisterInt = (registry,f) => (...args) => {
 	const [primitiveType, name, size, minRange, maxRange] = args;
 	registry.types[primitiveType] = name
+	registry.numbers.push(name)
 	return f(...args)
 }
 
 const injectBindings = info => {
 	const registry = {
-		functions:[], classes:{},
-		types: {}
+		functions: [], numbers: [],
+		classes: {}, types: {}
 	}
 	const {
 		_embind_register_function,

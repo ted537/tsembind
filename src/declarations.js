@@ -64,16 +64,26 @@ const getClassDeclaration = (module,registry) => classInfo => {
 	].flat().join('\n')
 }
 
+const capitalize = text =>
+	text[0].toUpperCase() + text.slice(1)
+
+const CamelCase = words =>
+	words.split(' ').map(capitalize).join('')
+
+// TS is not responsible for enforcing number sizes (int8 vs int32 etc)
+const declarationForNumber = (module,registry) => name => {
+	const humanName = readLatin1String(module)(name)
+	const camelCased = CamelCase(humanName)
+	return `type ${camelCased} = Number`
+}
+
 const declarationsForRegistry = (module,registry) => {
 	return [
-		[
-			'type int = Number;'
-		],
+		registry.numbers.map(declarationForNumber(module,registry)),
 		registry.functions.
 			map(getFunctionDeclaration(module,registry)),
 		Object.values(registry.classes).
 			map(getClassDeclaration(module,registry))
-
 	].flat().join('\n')
 }
 
