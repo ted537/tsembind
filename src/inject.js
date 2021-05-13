@@ -71,10 +71,17 @@ const wrapRegisterVoid = (registry,f) => (...args) => {
 	return f(...args);
 }
 
+const wrapRegisterEnum = (registry,f) => (...args) => {
+	const [rawType,name,size,isSigned] = args;
+	registry.types[rawType] = readName(name)
+	registry.enums[rawType] = {getName:readName(name),values:[]}
+	return f(...args)
+}
+
 const injectBindings = info => {
 	const registry = {
 		functions: [], numbers: [],
-		classes: {}, types: {}
+		classes: {}, types: {}, enums: {}
 	}
 	const {
 		_embind_register_function,
@@ -83,11 +90,14 @@ const injectBindings = info => {
 		_embind_register_class_constructor,
 		_embind_register_integer,
 		_embind_register_float,
-		_embind_register_void
+		_embind_register_void,
+		_embind_register_enum
 	} = info.env;
 	const injectedEnv = {...info.env,
 		_embind_register_function: 
 			wrapRegisterFunction(registry,_embind_register_function),
+		_embind_register_enum:
+			wrapRegisterEnum(registry,_embind_register_enum),
 		_embind_register_class:
 			wrapRegisterClass(registry,_embind_register_class),
 		_embind_register_integer:

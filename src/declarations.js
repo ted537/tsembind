@@ -59,6 +59,20 @@ const getClassDeclaration = (module,registry) => classInfo => {
 	].flat().join('\n')
 }
 
+const getEnumValueDeclaration = (module,registry) => valInfo => {
+	return "TODO"
+}
+
+const getEnumDeclaration = (module,registry) => enumInfo => {
+	const {getName,values} = enumInfo;
+	const name = getName(module)
+	return [
+		[`enum ${name} {`],
+		values.map(getEnumValueDeclaration(module,registry)),
+		['}']
+	].flat().join('\n')
+}
+
 
 // TS is not responsible for enforcing number sizes (int8 vs int32 etc)
 const declarationForNumber = (module,registry) => name => {
@@ -68,10 +82,12 @@ const declarationForNumber = (module,registry) => name => {
 const declarationsForRegistry = (module,registry) => {
 	return [
 		registry.numbers.map(declarationForNumber(module,registry)),
-		registry.functions.
-			map(getFunctionDeclaration(module,registry)),
-		Object.values(registry.classes).
-			map(getClassDeclaration(module,registry))
+		registry.functions
+			.map(getFunctionDeclaration(module,registry)),
+		Object.values(registry.classes)
+			.map(getClassDeclaration(module,registry)),
+		Object.values(registry.enums)
+			.map(getEnumDeclaration(module,registry))
 	].flat().join('\n')
 }
 
