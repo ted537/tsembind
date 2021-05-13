@@ -1,8 +1,11 @@
-const {inject, getDeclarations} = require('../src/tsembind.js')
-inject();
-async function main() {
-	const module = await require('../build/simplefunc.js')();
-	console.log(getDeclarations(module))
-	console.log(module.___getTypeName(12))
-}
-main()
+const {generateTypescriptBindings} = require('../src/tsembind.js')
+const assert = require('assert')
+
+describe('getTypescriptBindings', ()=> {
+	it('should detect that a void function exists', async ()=>{
+		assert.equal(
+			'declare function f();',
+			await generateTypescriptBindings('lib/voidfunc.js')
+		)
+	} )
+})

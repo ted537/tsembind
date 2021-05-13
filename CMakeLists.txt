@@ -4,12 +4,17 @@ project(tsembind)
 include_directories(src)
 
 add_executable(examplelib test/examplelib.cc)
-target_link_options(examplelib PUBLIC
-	-s MODULARIZE --bind
-)
+add_executable(voidfunc test/voidfunc.cc)
 
-set_property(
-	TARGET examplelib
-	PROPERTY RUNTIME_OUTPUT_DIRECTORY
-	${PROJECT_SOURCE_DIR}/lib
-)
+foreach(executable IN ITEMS examplelib voidfunc)
+	target_link_options(${executable} PUBLIC
+		-s MODULARIZE --bind
+	)
+
+	set_property(
+		TARGET ${executable}
+		PROPERTY RUNTIME_OUTPUT_DIRECTORY
+		${PROJECT_SOURCE_DIR}/lib
+	)
+
+endforeach()
