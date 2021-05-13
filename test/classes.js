@@ -24,4 +24,12 @@ describe('getTypescriptBindings (for classes)', ()=> {
 			'declare class A { f(): void; }'
 		)
 	} )
+	it('should generate a class multi-parameter method declaration', 
+		async ()=>{
+			assertEqualNormalized(
+				await findClassDeclaration('lib/classmethodmultiparam.js'),
+				'declare class A { f(arg0: Int, arg1: Float): Int; }'
+			)
+		}
+	)
 })
