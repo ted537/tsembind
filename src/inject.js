@@ -48,6 +48,14 @@ const wrapRegisterInt = (registry,f) => (...args) => {
 	return f(...args)
 }
 
+const wrapRegisterFloat = (registry,f) => (...args) => {
+	const [rawType, name, size] = args;
+	const getName = () => "Float"
+	registry.types[rawType] = getName
+	registry.numbers.push(getName)
+	return f(...args)
+}
+
 const wrapRegisterVoid = (registry,f) => (...args) => {
 	const [rawType, name] = args;
 	registry.types[rawType] = () => "void"
@@ -64,6 +72,7 @@ const injectBindings = info => {
 		_embind_register_class,
 		_embind_register_class_function,
 		_embind_register_integer,
+		_embind_register_float,
 		_embind_register_void
 	} = info.env;
 	const injectedEnv = {...info.env,
@@ -73,6 +82,8 @@ const injectBindings = info => {
 			wrapRegisterClass(registry,_embind_register_class),
 		_embind_register_integer:
 			wrapRegisterInt(registry,_embind_register_integer),
+		_embind_register_float:
+			wrapRegisterFloat(registry,_embind_register_float),
 		_embind_register_class_function:
 			wrapRegisterClassFunction(registry,_embind_register_class_function),
 		_embind_register_void:
