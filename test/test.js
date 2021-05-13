@@ -27,5 +27,13 @@ describe('getTypescriptBindings', ()=> {
 			)
 		}
 	)
+	it('should generate a declaration for an int identity function',
+		async ()=>{
+			assert.equal(
+				lastLine(await generateTypescriptBindings('lib/identity.js')),
+				'declare function f(arg0: Int): Int;'
+			)
+		}
+	)
 })
 
