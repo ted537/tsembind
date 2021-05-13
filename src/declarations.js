@@ -37,13 +37,13 @@ const getFunctionDeclaration = (module,registry) => funcInfo => {
 }
 
 const getClassDeclaration = (module,registry) => classInfo => {
-	const {name} = classInfo;
+	const {name,functions} = classInfo;
 	const humanName = readLatin1String(module)(name)
 	return [
-		`class ${humanName} {`,
-		
-		'}'
-	].join('\n')
+		[`class ${humanName} {`],
+		functions.map(func=>func.methodName),
+		['}']
+	].flat().join('\n')
 }
 
 const declarationsForRegistry = (module,registry) => {
@@ -53,7 +53,7 @@ const declarationsForRegistry = (module,registry) => {
 		],
 		registry.functions.
 			map(getFunctionDeclaration(module,registry)),
-		registry.classes.
+		Object.values(registry.classes).
 			map(getClassDeclaration(module,registry))
 
 	].flat().join('\n')
