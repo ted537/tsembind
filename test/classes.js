@@ -18,4 +18,10 @@ describe('getTypescriptBindings (for classes)', ()=> {
 			'declare class A { }'
 		)
 	} )
+	it('should generate a class method declaration', async ()=>{
+		assertEqualNormalized(
+			await findClassDeclaration('lib/classmethod.js'),
+			'declare class A { f(): void; }'
+		)
+	} )
 })
