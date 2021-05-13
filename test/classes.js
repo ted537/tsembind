@@ -32,4 +32,12 @@ describe('getTypescriptBindings (for classes)', ()=> {
 			)
 		}
 	)
+	it('should generate a constructor declaration', 
+		async ()=>{
+			assertEqualNormalized(
+				await findClassDeclaration('lib/constructor.js'),
+				'declare class A { constructor(); }'
+			)
+		}
+	)
 })

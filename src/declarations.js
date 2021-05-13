@@ -38,11 +38,22 @@ const getClassFunctionDeclaration = (module,registry) => funcInfo => {
 	return `\t${humanName}(${parameters}): ${returnType};`
 }
 
+const getClassConstructorDeclaration = (module,registry) => funcInfo => {
+	const {argCount, rawArgTypesAddr} = funcInfo;
+	const argTypes = heap32VectorToArray(module)(argCount, rawArgTypesAddr);
+	const argTypeNames = argTypes.map(typeIdToTypeName(module,registry))
+	const [returnType, ...parameterTypes] = argTypeNames;
+	const parameters = typeNamesToParameters(parameterTypes)
+
+	return `\tconstructor(${parameters});`
+}
+
 const getClassDeclaration = (module,registry) => classInfo => {
-	const {name,functions} = classInfo;
+	const {name,functions,constructors} = classInfo;
 	const humanName = readLatin1String(module)(name)
 	return [
 		[`declare class ${humanName} {`],
+		constructors.map(getClassConstructorDeclaration(module,registry)),
 		functions.map(getClassFunctionDeclaration(module,registry)),
 		['}']
 	].flat().join('\n')
