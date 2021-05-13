@@ -4,7 +4,7 @@ const assert = require('assert')
 const lastLine = text =>
 	text.slice(text.lastIndexOf('\n')+1)
 
-describe('getTypescriptBindings', ()=> {
+describe('getTypescriptBindings (for simple functions)', ()=> {
 	it('should generate a void function declaration', async ()=>{
 		assert.equal(
 			lastLine(await generateTypescriptBindings('lib/voidfunc.js')),
