@@ -11,12 +11,18 @@ add_executable(identity test/identity.cc)
 add_executable(sum test/sum.cc)
 add_executable(emptyclass test/empty_class.cc)
 add_executable(constructor test/constructor.cc)
+add_executable(constructor_args test/constructor_args.cc)
 add_executable(classmethod test/class_method.cc)
 add_executable(classmethodmultiparam test/class_method_multi_param.cc)
 
 foreach(executable IN ITEMS 
-		examplelib voidfunc return_int return_float identity sum
-		emptyclass constructor classmethod classmethodmultiparam
+		# general
+		examplelib 
+		# free functions	
+		voidfunc return_int return_float identity sum
+		# classes
+		emptyclass constructor constructor_args
+		classmethod classmethodmultiparam
 )
 	target_link_options(${executable} PUBLIC
 		-s MODULARIZE --bind
