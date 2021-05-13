@@ -11,6 +11,7 @@ add_executable(identity test/identity.cc)
 add_executable(sum test/sum.cc)
 add_executable(emptyclass test/empty_class.cc)
 add_executable(emptyenum test/empty_enum.cc)
+add_executable(enum1 test/enum1.cc)
 add_executable(constructor test/constructor.cc)
 add_executable(constructor_args test/constructor_args.cc)
 add_executable(classmethod test/class_method.cc)
@@ -25,7 +26,7 @@ foreach(executable IN ITEMS
 		emptyclass constructor constructor_args
 		classmethod classmethodmultiparam
 		# enums
-		emptyenum
+		emptyenum enum1
 )
 	target_link_options(${executable} PUBLIC
 		-s MODULARIZE --bind

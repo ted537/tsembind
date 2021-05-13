@@ -18,4 +18,10 @@ describe('getTypescriptBindings (for enums)', ()=> {
 			'enum Direction { }'
 		)
 	} )
+	it('should generate an enum declaration with a value', async ()=>{
+		assertEqualNormalized(
+			await findEnumDeclaration('lib/enum1.js'),
+			'enum Direction { Up = 1 }'
+		)
+	} )
 })

@@ -78,6 +78,12 @@ const wrapRegisterEnum = (registry,f) => (...args) => {
 	return f(...args)
 }
 
+const wrapRegisterEnumValue = (registry,f) => (...args) => {
+	const [rawEnumType,name,enumValue] = args;
+	registry.enums[rawEnumType].values.push({name,enumValue})
+	return f(...args)
+}
+
 const injectBindings = info => {
 	const registry = {
 		functions: [], numbers: [],
@@ -91,13 +97,16 @@ const injectBindings = info => {
 		_embind_register_integer,
 		_embind_register_float,
 		_embind_register_void,
-		_embind_register_enum
+		_embind_register_enum,
+		_embind_register_enum_value
 	} = info.env;
 	const injectedEnv = {...info.env,
 		_embind_register_function: 
 			wrapRegisterFunction(registry,_embind_register_function),
 		_embind_register_enum:
 			wrapRegisterEnum(registry,_embind_register_enum),
+		_embind_register_enum_value:
+			wrapRegisterEnumValue(registry,_embind_register_enum_value),
 		_embind_register_class:
 			wrapRegisterClass(registry,_embind_register_class),
 		_embind_register_integer:
