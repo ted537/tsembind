@@ -9,9 +9,11 @@ add_executable(return_int test/return_int.cc)
 add_executable(return_float test/return_float.cc)
 add_executable(identity test/identity.cc)
 add_executable(sum test/sum.cc)
+add_executable(emptyclass test/empty_class.cc)
 
 foreach(executable IN ITEMS 
 		examplelib voidfunc return_int return_float identity sum
+		emptyclass
 )
 	target_link_options(${executable} PUBLIC
 		-s MODULARIZE --bind
