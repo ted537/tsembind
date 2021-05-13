@@ -21,7 +21,13 @@ describe('getTypescriptBindings (for enums)', ()=> {
 	it('should generate an enum declaration with a value', async ()=>{
 		assertEqualNormalized(
 			await findEnumDeclaration('lib/enum1.js'),
-			'enum Direction { Up = 1 }'
+			'enum Direction { Up = 1, }'
+		)
+	} )
+	it('should generate an enum declaration with multiple values', async ()=>{
+		assertEqualNormalized(
+			await findEnumDeclaration('lib/enum2.js'),
+			'enum Direction { Up = 1, Down = 2, }'
 		)
 	} )
 })

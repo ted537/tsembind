@@ -62,7 +62,7 @@ const getClassDeclaration = (module,registry) => classInfo => {
 const getEnumValueDeclaration = (module,registry) => valInfo => {
 	const {name,enumValue} = valInfo;
 	const humanName = readLatin1String(module)(name)
-	return `\t${humanName} = ${enumValue}`
+	return `\t${humanName} = ${enumValue},`
 }
 
 const getEnumDeclaration = (module,registry) => enumInfo => {
