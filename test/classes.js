@@ -59,7 +59,7 @@ describe('getTypescriptBindings (for classes)', ()=> {
 		async ()=>{
 			assertEqualNormalized(
 				await findFuncDeclaration('lib/smartptr.js'),
-				'function MakeSharedA() : A;'
+				'declare function MakeSharedA(): A;'
 			)
 		}
 	)

@@ -32,6 +32,22 @@ const wrapRegisterClass = (registry,f) => (...args) => {
 	return f(...args)
 }
 
+const wrapRegisterSmartPtr = (registry,f) => (...args) => {
+	const [
+		rawType,rawPointeeType,
+		name,sharingPolicy,
+		getPointeeSignature,rawGetPointee,
+		constructorSignature,rawConstructor,
+		shareSignature,rawShare,
+		destructorSignature,rawDestructor
+	] = args;
+
+	const types = [rawType,rawPointeeType];
+	for (const type of types) registry.types[type] = readName(name)
+
+	return f(...args);
+}
+
 const wrapRegisterClassFunction = (registry,f) => (...args) => {
 	const [rawClassType,methodName,argCount,rawArgTypesAddr] = args;
 	registry.classes[rawClassType].functions.push(
@@ -101,6 +117,7 @@ const injectBindings = info => {
 		_embind_register_class,
 		_embind_register_class_function,
 		_embind_register_class_constructor,
+		_embind_register_smart_ptr,
 		_embind_register_integer,
 		_embind_register_float,
 		_embind_register_void,
@@ -124,6 +141,8 @@ const injectBindings = info => {
 			wrapRegisterClassFunction(registry,_embind_register_class_function),
 		_embind_register_class_constructor:
 			wrapRegisterClassConstructor(registry,_embind_register_class_constructor),
+		_embind_register_smart_ptr:
+			wrapRegisterSmartPtr(registry,_embind_register_smart_ptr),
 		_embind_register_void:
 			wrapRegisterVoid(registry,_embind_register_void),
 		_embind_register_bool:
