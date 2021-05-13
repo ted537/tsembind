@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test-only": "mocha",
-	"test": "npm run build && npm run test-only",
+    "test": "npm run build && npm run test-only",
     "build": "emcmake cmake -S . -B build && emmake make -C build"
   },
   "repository": {
