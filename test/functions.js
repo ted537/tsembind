@@ -27,6 +27,14 @@ describe('getTypescriptBindings (for simple functions)', ()=> {
 			)
 		}
 	)
+	it('should generate a declaration for a function returning a bool', 
+		async ()=>{
+			assert.equal(
+				lastLine(await generateTypescriptBindings('lib/return_bool.js')),
+				'declare function f(): boolean;'
+			)
+		}
+	)
 	it('should generate a declaration for an int identity function',
 		async ()=>{
 			assert.equal(
