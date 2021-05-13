@@ -36,13 +36,25 @@ const getFunctionDeclaration = (module,registry) => funcInfo => {
 	return `declare function ${nameStr}(${parameterTypes}): ${returnType};`
 }
 
+const getClassDeclaration = (module,registry) => classInfo => {
+	const {name} = classInfo;
+	const humanName = readLatin1String(module)(name)
+	return [
+		`class ${humanName} {`,
+		
+		'}'
+	].join('\n')
+}
+
 const declarationsForRegistry = (module,registry) => {
 	return [
 		[
 			'type int = Number;'
 		],
 		registry.functions.
-			map(getFunctionDeclaration(module,registry))
+			map(getFunctionDeclaration(module,registry)),
+		registry.classes.
+			map(getClassDeclaration(module,registry))
 
 	].flat().join('\n')
 }
