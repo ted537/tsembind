@@ -11,9 +11,6 @@ describe('getTypescriptBindings', ()=> {
 			'declare function f(): void;'
 		)
 	} )
-})
-
-describe('getTypescriptBindings', ()=> {
 	it('should generate a declaration for a function returning an integer', 
 		async ()=>{
 			assert.equal(
@@ -22,9 +19,6 @@ describe('getTypescriptBindings', ()=> {
 			)
 		}
 	)
-})
-
-describe('getTypescriptBindings', ()=> {
 	it('should generate a declaration for a function returning a float', 
 		async ()=>{
 			assert.equal(
@@ -34,3 +28,4 @@ describe('getTypescriptBindings', ()=> {
 		}
 	)
 })
+
