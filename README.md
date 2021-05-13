@@ -10,7 +10,7 @@ npm i -g git+https://github.com/ted537/tsembind.git
 
 Usage:
 ```
-tsembind my-embind-lib.js -o [my-emlib.d.ts]
+tsembind my-embind-lib.js
 ```
 
 ## How it works
