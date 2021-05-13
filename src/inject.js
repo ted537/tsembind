@@ -26,7 +26,8 @@ const wrapRegisterClass = (registry,f) => (...args) => {
 const wrapRegisterClassFunction = (registry,f) => (...args) => {
 	const [rawClassType,methodName,argCount,rawArgTypesAddr] = args;
 	registry.classes[rawClassType].functions.push(
-		{methodName,argCount,rawArgTypesAddr})
+		{methodName,argCount,rawArgTypesAddr}
+	)
 	return f(...args)
 }
 

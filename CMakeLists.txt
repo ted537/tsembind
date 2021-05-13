@@ -6,7 +6,6 @@ include_directories(src)
 add_executable(examplelib test/examplelib.cc)
 target_link_options(examplelib PUBLIC
 	-s MODULARIZE --bind
-	-sEXPORTED_RUNTIME_METHODS=[registeredTypes] 
 )
 
 set_property(
