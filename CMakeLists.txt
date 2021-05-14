@@ -13,6 +13,7 @@ add_executable(return_string test/return_string.cc)
 add_executable(identity test/identity.cc)
 add_executable(sum test/sum.cc)
 add_executable(emptyclass test/empty_class.cc)
+add_executable(subclass test/subclass.cc)
 add_executable(smartptr test/smart_ptr.cc)
 add_executable(emptyenum test/empty_enum.cc)
 add_executable(enum1 test/enum1.cc)
@@ -30,7 +31,7 @@ foreach(executable IN ITEMS
 		voidfunc identity sum overload
 		return_int return_float return_bool return_string
 		# classes
-		emptyclass constructor constructor_args
+		emptyclass constructor constructor_args subclass
 		classmethod classclassmethod classmethodmultiparam
 		smartptr
 		# enums

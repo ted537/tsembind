@@ -1,10 +1,14 @@
 const {generateTypescriptBindings} = require('../src/tsembind.js')
 const assert = require('assert')
 
-const findClassDeclaration = async libname => {
+const findClassDeclaration = async (libname,classname) => {
+	classname = classname || ''
 	const text = await generateTypescriptBindings(libname)
 	const lines = text.split('\n')
-	const lineIndex = lines.findIndex(line=>line.includes('declare class'))
+	console.log(`classname=${classname}`)
+	const lineIndex = lines.findIndex(
+		line=>line.includes(`declare class ${classname}`)
+	)
 	return lines.slice(lineIndex).join('\n')
 }
 
@@ -23,6 +27,12 @@ describe('getTypescriptBindings (for classes)', ()=> {
 		assertEqualNormalized(
 			await findClassDeclaration('lib/emptyclass.js'),
 			'declare class A { }'
+		)
+	} )
+	it('should generate a subclass declaration', async ()=>{
+		assertEqualNormalized(
+			await findClassDeclaration('lib/subclass.js','B'),
+			'declare class B extends A { }'
 		)
 	} )
 	it('should generate a class method declaration', async ()=>{
