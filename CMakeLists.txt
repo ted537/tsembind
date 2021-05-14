@@ -9,6 +9,7 @@ add_executable(overload test/overload.cc)
 add_executable(return_int test/return_int.cc)
 add_executable(return_float test/return_float.cc)
 add_executable(return_bool test/return_bool.cc)
+add_executable(return_string test/return_string.cc)
 add_executable(identity test/identity.cc)
 add_executable(sum test/sum.cc)
 add_executable(emptyclass test/empty_class.cc)
@@ -26,7 +27,8 @@ foreach(executable IN ITEMS
 		# general
 		examplelib 
 		# free functions	
-		voidfunc return_int return_float return_bool identity sum overload
+		voidfunc identity sum overload
+		return_int return_float return_bool return_string
 		# classes
 		emptyclass constructor constructor_args
 		classmethod classclassmethod classmethodmultiparam

@@ -40,6 +40,14 @@ describe('getTypescriptBindings (for simple functions)', ()=> {
 			)
 		}
 	)
+	it('should generate a declaration for a function returning a string', 
+		async ()=>{
+			assert.equal(
+				lastLine(await generateTypescriptBindings('lib/return_string.js')),
+				'declare function f(): string;'
+			)
+		}
+	)
 	it('should generate a declaration for an int identity function',
 		async ()=>{
 			assert.equal(
