@@ -22,14 +22,11 @@ const wrapRegisterClass = (registry,f) => (...args) => {
 		downcastSignature, downcast,
 		name, destructorSignature, rawDestructor
 	] = args;
-	const types = [
-		rawType, rawPointerType, rawConstPointerType,
-		baseClassRawType
-	];
-
+	const types = [rawType, rawPointerType, rawConstPointerType]
 	for (const type of types) registry.types[type] = readName(name)
+
 	registry.classes[rawType] = {
-		name,
+		name, baseClassRawType,
 		functions:[],constructors:[],classFunctions:[]
 	}
 	return f(...args)

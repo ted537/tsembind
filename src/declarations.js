@@ -61,11 +61,30 @@ const getClassConstructorDeclaration = (module,registry) => funcInfo => {
 	return `\tconstructor(${parameters});`
 }
 
+const getClassDeclarationHeader = 
+	(module,registry) => 
+	(rawType,baseClassRawType) => {
+	const humanName = readLatin1String(module)(rawType)
+	const hasParent = baseClassRawType !== 0
+	if (!hasParent) {
+		return `declare class ${humanName} {`
+	}
+	else {
+		console.log(`baseClassRawType=${baseClassRawType}`)
+		const baseHumanName = typeIdToTypeName(module,registry)(baseClassRawType)
+		return `declare class ${humanName} extends ${baseHumanName} {`
+	}
+}
+
 const getClassDeclaration = (module,registry) => classInfo => {
-	const {name,classFunctions,functions,constructors} = classInfo;
-	const humanName = readLatin1String(module)(name)
+	const {
+		name,baseClassRawType,
+		classFunctions,functions,constructors
+	} = classInfo;
+	const header = getClassDeclarationHeader(module,registry)
+		(name,baseClassRawType)
 	return [
-		[`declare class ${humanName} {`],
+		[header],
 		constructors.map(getClassConstructorDeclaration(module,registry)),
 		classFunctions.map(getClassClassFunctionDeclaration(module,registry)),
 		functions.map(getClassFunctionDeclaration(module,registry)),

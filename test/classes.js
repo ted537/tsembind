@@ -5,7 +5,6 @@ const findClassDeclaration = async (libname,classname) => {
 	classname = classname || ''
 	const text = await generateTypescriptBindings(libname)
 	const lines = text.split('\n')
-	console.log(`classname=${classname}`)
 	const lineIndex = lines.findIndex(
 		line=>line.includes(`declare class ${classname}`)
 	)
