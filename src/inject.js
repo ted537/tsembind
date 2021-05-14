@@ -95,6 +95,12 @@ const wrapRegisterFloat = (registry,f) => (...args) => {
 	return f(...args)
 }
 
+const wrapRegisterString = (registry,f) => (...args) => {
+	const [rawType,name] = args;
+	registry.types[rawType] = () => "string"
+	return f(...args)
+}
+
 const wrapRegisterVoid = (registry,f) => (...args) => {
 	const [rawType, name] = args;
 	registry.types[rawType] = () => "void"
@@ -128,6 +134,7 @@ const injectBindings = info => {
 	const {
 		_embind_register_function,
 		_embind_register_bool,
+		_embind_register_std_string,
 		_embind_register_class,
 		_embind_register_class_function,
 		_embind_register_class_class_function,
@@ -163,7 +170,9 @@ const injectBindings = info => {
 		_embind_register_void:
 			wrapRegisterVoid(registry,_embind_register_void),
 		_embind_register_bool:
-			wrapRegisterBool(registry,_embind_register_bool)
+			wrapRegisterBool(registry,_embind_register_bool),
+		_embind_register_std_string:
+			wrapRegisterString(registry,_embind_register_std_string)
 	}
 	const injectedInfo = {...info,env:injectedEnv}
 	return {registry, injectedInfo}
