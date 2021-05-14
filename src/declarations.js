@@ -40,6 +40,17 @@ const getClassFunctionDeclaration = (module,registry) => funcInfo => {
 	return `\t${humanName}(${parameters}): ${returnType};`
 }
 
+const getClassClassFunctionDeclaration = (module,registry) => funcInfo => {
+	const {methodName,argCount,rawArgTypesAddr} = funcInfo;
+	const humanName = readLatin1String(module)(methodName);
+	const argTypes = heap32VectorToArray(module)(argCount, rawArgTypesAddr);
+	const argTypeNames = argTypes.map(typeIdToTypeName(module,registry))
+	const [returnType, ...parameterTypes] = argTypeNames;
+	const parameters = typeNamesToParameters(parameterTypes)
+
+	return `\tstatic ${humanName}(${parameters}): ${returnType};`
+}
+
 const getClassConstructorDeclaration = (module,registry) => funcInfo => {
 	const {argCount, rawArgTypesAddr} = funcInfo;
 	const argTypes = heap32VectorToArray(module)(argCount, rawArgTypesAddr);
@@ -51,11 +62,12 @@ const getClassConstructorDeclaration = (module,registry) => funcInfo => {
 }
 
 const getClassDeclaration = (module,registry) => classInfo => {
-	const {name,functions,constructors} = classInfo;
+	const {name,classFunctions,functions,constructors} = classInfo;
 	const humanName = readLatin1String(module)(name)
 	return [
 		[`declare class ${humanName} {`],
 		constructors.map(getClassConstructorDeclaration(module,registry)),
+		classFunctions.map(getClassClassFunctionDeclaration(module,registry)),
 		functions.map(getClassFunctionDeclaration(module,registry)),
 		['}']
 	].flat().join('\n')

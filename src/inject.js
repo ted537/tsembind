@@ -28,7 +28,10 @@ const wrapRegisterClass = (registry,f) => (...args) => {
 	];
 
 	for (const type of types) registry.types[type] = readName(name)
-	registry.classes[rawType] = {name,functions:[],constructors:[]}
+	registry.classes[rawType] = {
+		name,
+		functions:[],constructors:[],classFunctions:[]
+	}
 	return f(...args)
 }
 
@@ -52,6 +55,17 @@ const wrapRegisterClassFunction = (registry,f) => (...args) => {
 	const [rawClassType,methodName,argCount,rawArgTypesAddr] = args;
 	registry.classes[rawClassType].functions.push(
 		{methodName,argCount,rawArgTypesAddr}
+	)
+	return f(...args)
+}
+
+const wrapRegisterClassClassFunction = (registry,f) => (...args) => {
+	const [
+		rawClassType,methodName,argCount,rawArgTypesAddr,
+		invokerSignature, rawInvoker, fn
+	] = args;
+	registry.classes[rawClassType].classFunctions.push(
+		{methodName, argCount, rawArgTypesAddr}
 	)
 	return f(...args)
 }
@@ -116,6 +130,7 @@ const injectBindings = info => {
 		_embind_register_bool,
 		_embind_register_class,
 		_embind_register_class_function,
+		_embind_register_class_class_function,
 		_embind_register_class_constructor,
 		_embind_register_smart_ptr,
 		_embind_register_integer,
@@ -139,6 +154,8 @@ const injectBindings = info => {
 			wrapRegisterFloat(registry,_embind_register_float),
 		_embind_register_class_function:
 			wrapRegisterClassFunction(registry,_embind_register_class_function),
+		_embind_register_class_class_function:
+			wrapRegisterClassClassFunction(registry,_embind_register_class_class_function),
 		_embind_register_class_constructor:
 			wrapRegisterClassConstructor(registry,_embind_register_class_constructor),
 		_embind_register_smart_ptr:
