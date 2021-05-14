@@ -4,6 +4,11 @@ const assert = require('assert')
 const lastLine = text =>
 	text.slice(text.lastIndexOf('\n')+1)
 
+const lastLines = n => text => {
+	const lines = text.split('\n');
+	return lines.slice(lines.length-n).join('\n')
+}
+
 describe('getTypescriptBindings (for simple functions)', ()=> {
 	it('should generate a void function declaration', async ()=>{
 		assert.equal(
@@ -48,6 +53,16 @@ describe('getTypescriptBindings (for simple functions)', ()=> {
 			assert.equal(
 				lastLine(await generateTypescriptBindings('lib/sum.js')),
 				'declare function f(arg0: Int, arg1: Int): Int;'
+			)
+		}
+	)
+	it('should generate declarations for function overloads',
+		async ()=>{
+			assert.equal(
+				lastLines(2)
+					(await generateTypescriptBindings('lib/overload.js')),
+				'declare function f(): void;\n'+
+				'declare function f(arg0: Int): void;'
 			)
 		}
 	)

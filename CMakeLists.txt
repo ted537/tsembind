@@ -5,6 +5,7 @@ include_directories(src)
 
 add_executable(examplelib test/examplelib.cc)
 add_executable(voidfunc test/voidfunc.cc)
+add_executable(overload test/overload.cc)
 add_executable(return_int test/return_int.cc)
 add_executable(return_float test/return_float.cc)
 add_executable(return_bool test/return_bool.cc)
@@ -25,7 +26,7 @@ foreach(executable IN ITEMS
 		# general
 		examplelib 
 		# free functions	
-		voidfunc return_int return_float return_bool identity sum
+		voidfunc return_int return_float return_bool identity sum overload
 		# classes
 		emptyclass constructor constructor_args
 		classmethod classclassmethod classmethodmultiparam
