@@ -18,6 +18,7 @@ add_executable(enum2 test/enum2.cc)
 add_executable(constructor test/constructor.cc)
 add_executable(constructor_args test/constructor_args.cc)
 add_executable(classmethod test/class_method.cc)
+add_executable(classclassmethod test/class_class_method.cc)
 add_executable(classmethodmultiparam test/class_method_multi_param.cc)
 
 foreach(executable IN ITEMS 
@@ -27,7 +28,7 @@ foreach(executable IN ITEMS
 		voidfunc return_int return_float return_bool identity sum
 		# classes
 		emptyclass constructor constructor_args
-		classmethod classmethodmultiparam
+		classmethod classclassmethod classmethodmultiparam
 		smartptr
 		# enums
 		emptyenum enum1 enum2
