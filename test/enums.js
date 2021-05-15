@@ -5,7 +5,10 @@ const findEnumDeclaration = async libname => {
 	const text = await generateTypescriptBindings(libname)
 	const lines = text.split('\n')
 	const lineIndex = lines.findIndex(line=>line.includes('enum '))
-	return lines.slice(lineIndex).join('\n')
+	const footerIndex = lines.findIndex(
+		line=>line.includes('CustomEmbindModule')
+	)
+	return lines.slice(lineIndex,footerIndex).join('\n')
 }
 
 const normalize = str => str.replace(/\s+/g, ' ')
