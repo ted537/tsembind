@@ -8,13 +8,18 @@ const findClassDeclaration = async (libname,classname) => {
 	const lineIndex = lines.findIndex(
 		line=>line.includes(`interface ${classname}`)
 	)
-	return lines.slice(lineIndex).join('\n')
+	const footerIndex = lines.findIndex(
+		line=>line.includes('CustomEmbindModule')
+	)
+	return lines.slice(lineIndex,footerIndex).join('\n')
 }
 
 const findFuncDeclaration = async libname => {
 	const text = await generateTypescriptBindings(libname)
 	const lines = text.split('\n')
-	const lineIndex = lines.findIndex(line=>line.includes('('))
+	const lineIndex = lines.findIndex(
+		line=>line.includes('(') && !line.includes('declare ')
+	)
 	return lines[lineIndex]
 }
 
@@ -25,32 +30,32 @@ describe('getTypescriptBindings (for classes)', ()=> {
 	it('should generate a class declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/emptyclass.js'),
-			'interface A { }'
+			'export interface A { }'
 		)
 	} )
 	it('should generate a subclass declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/subclass.js','B'),
-			'interface B extends A { }'
+			'export interface B extends A { }'
 		)
 	} )
 	it('should generate a class method declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/classmethod.js'),
-			'interface A { f(): void; }'
+			'export interface A { f(): void; }'
 		)
 	} )
 	it('should generate a class class method declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/classclassmethod.js'),
-			'interface A { static f(): void; }'
+			'export interface A { static f(): void; }'
 		)
 	} )
 	it('should generate a class multi-parameter method declaration', 
 		async ()=>{
 			assertEqualNormalized(
 				await findClassDeclaration('lib/classmethodmultiparam.js'),
-				'interface A { f(arg0: Int, arg1: Float): Int; }'
+				'export interface A { f(arg0: Int, arg1: Float): Int; }'
 			)
 		}
 	)
@@ -58,7 +63,7 @@ describe('getTypescriptBindings (for classes)', ()=> {
 		async ()=>{
 			assertEqualNormalized(
 				await findClassDeclaration('lib/constructor.js'),
-				'interface A { constructor(); }'
+				'export interface A { constructor(); }'
 			)
 		}
 	)
@@ -66,7 +71,7 @@ describe('getTypescriptBindings (for classes)', ()=> {
 		async ()=>{
 			assertEqualNormalized(
 				await findClassDeclaration('lib/constructor_args.js'),
-				'interface A { constructor(arg0: Int, arg1: Float); }'
+				'export interface A { constructor(arg0: Int, arg1: Float); }'
 			)
 		}
 	)
@@ -74,7 +79,7 @@ describe('getTypescriptBindings (for classes)', ()=> {
 		async ()=>{
 			assertEqualNormalized(
 				await findFuncDeclaration('lib/smartptr.js'),
-				'declare function MakeSharedA(): A;'
+				'\tMakeSharedA(): A;'
 			)
 		}
 	)
