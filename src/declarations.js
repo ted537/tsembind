@@ -67,11 +67,11 @@ const getClassDeclarationHeader =
 	const humanName = readLatin1String(module)(rawType)
 	const hasParent = baseClassRawType !== 0
 	if (!hasParent) {
-		return `declare class ${humanName} {`
+		return `interface ${humanName} {`
 	}
 	else {
 		const baseHumanName = typeIdToTypeName(module,registry)(baseClassRawType)
-		return `declare class ${humanName} extends ${baseHumanName} {`
+		return `interface ${humanName} extends ${baseHumanName} {`
 	}
 }
 

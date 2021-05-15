@@ -6,7 +6,7 @@ const findClassDeclaration = async (libname,classname) => {
 	const text = await generateTypescriptBindings(libname)
 	const lines = text.split('\n')
 	const lineIndex = lines.findIndex(
-		line=>line.includes(`declare class ${classname}`)
+		line=>line.includes(`interface ${classname}`)
 	)
 	return lines.slice(lineIndex).join('\n')
 }
@@ -14,7 +14,7 @@ const findClassDeclaration = async (libname,classname) => {
 const findFuncDeclaration = async libname => {
 	const text = await generateTypescriptBindings(libname)
 	const lines = text.split('\n')
-	const lineIndex = lines.findIndex(line=>line.includes('declare function'))
+	const lineIndex = lines.findIndex(line=>line.includes('('))
 	return lines[lineIndex]
 }
 
@@ -25,32 +25,32 @@ describe('getTypescriptBindings (for classes)', ()=> {
 	it('should generate a class declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/emptyclass.js'),
-			'declare class A { }'
+			'interface A { }'
 		)
 	} )
 	it('should generate a subclass declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/subclass.js','B'),
-			'declare class B extends A { }'
+			'interface B extends A { }'
 		)
 	} )
 	it('should generate a class method declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/classmethod.js'),
-			'declare class A { f(): void; }'
+			'interface A { f(): void; }'
 		)
 	} )
 	it('should generate a class class method declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/classclassmethod.js'),
-			'declare class A { static f(): void; }'
+			'interface A { static f(): void; }'
 		)
 	} )
 	it('should generate a class multi-parameter method declaration', 
 		async ()=>{
 			assertEqualNormalized(
 				await findClassDeclaration('lib/classmethodmultiparam.js'),
-				'declare class A { f(arg0: Int, arg1: Float): Int; }'
+				'interface A { f(arg0: Int, arg1: Float): Int; }'
 			)
 		}
 	)
@@ -58,7 +58,7 @@ describe('getTypescriptBindings (for classes)', ()=> {
 		async ()=>{
 			assertEqualNormalized(
 				await findClassDeclaration('lib/constructor.js'),
-				'declare class A { constructor(); }'
+				'interface A { constructor(); }'
 			)
 		}
 	)
@@ -66,7 +66,7 @@ describe('getTypescriptBindings (for classes)', ()=> {
 		async ()=>{
 			assertEqualNormalized(
 				await findClassDeclaration('lib/constructor_args.js'),
-				'declare class A { constructor(arg0: Int, arg1: Float); }'
+				'interface A { constructor(arg0: Int, arg1: Float); }'
 			)
 		}
 	)
