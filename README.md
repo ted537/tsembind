@@ -1,4 +1,4 @@
-# Typescript for Emsripten (TSEMBIND)
+# Typescript for Emscripten (TSEMBIND)
 
 Generate `.d.ts` files using your existing Emscripten projects.
 Re-compiling is not necessary!
