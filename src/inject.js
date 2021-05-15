@@ -114,6 +114,23 @@ wrappers['_embind_register_emval'] = (registry,f) => (...args) => {
 	return f(...args);
 }
 
+wrappers['_embind_register_memory_view'] = (registry,f) => (...args) => {
+	const [rawType, dataTypeIndex, name] = args;
+	const typeMapping = [
+        Int8Array,
+        Uint8Array,
+        Int16Array,
+        Uint16Array,
+        Int32Array,
+        Uint32Array,
+        Float32Array,
+        Float64Array,
+    ];
+	const type = typeMapping[dataTypeIndex];
+	registry.types[rawType] = () => type.name;
+	return f(...args)
+}
+
 wrappers['_embind_register_bool'] = (registry,f) => (...args) => {
 	const [rawType,name,size,trueValue,falseValue] = args;
 	registry.types[rawType] = () => "boolean"

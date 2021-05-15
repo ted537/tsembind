@@ -45,6 +45,12 @@ describe('getTypescriptBindings (for classes)', ()=> {
 			'export interface A { f(): void; }'
 		)
 	} )
+	it('should generate a class property declaration', async ()=>{
+		assertEqualNormalized(
+			await findClassDeclaration('lib/classproperty.js'),
+			'export interface A { x: Int; }'
+		)
+	} )
 	it('should generate a class class method declaration', async ()=>{
 		assertEqualNormalized(
 			await findClassDeclaration('lib/classclassmethod.js'),
