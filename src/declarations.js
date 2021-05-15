@@ -67,11 +67,11 @@ const getClassDeclarationHeader =
 	const humanName = readLatin1String(module)(rawType)
 	const hasParent = baseClassRawType !== 0
 	if (!hasParent) {
-		return `interface ${humanName} {`
+		return `export interface ${humanName} {`
 	}
 	else {
 		const baseHumanName = typeIdToTypeName(module,registry)(baseClassRawType)
-		return `interface ${humanName} extends ${baseHumanName} {`
+		return `export interface ${humanName} extends ${baseHumanName} {`
 	}
 }
 
@@ -117,11 +117,13 @@ const indent = text => `\t${text}`
 
 const getModuleDeclaration = (module,registry) => {
 	return [
-		"interface CustomEmbindModule {",
+		"export interface CustomEmbindModule {",
 		...registry.functions
 			.map(getFunctionDeclaration(module,registry))
 			.map(indent),
-		"}"
+		"}",
+		"declare function factory(): Promise<CustomEmbindModule>;",
+		"export default factory;"
 	].join('\n')
 }
 
