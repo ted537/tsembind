@@ -61,6 +61,13 @@ const getClassConstructorDeclaration = (module,registry) => funcInfo => {
 	return `\tconstructor(${parameters});`
 }
 
+const getClassPropertyDeclaration = (module,registry) => funcInfo => {
+	const {fieldName,getterReturnType} = funcInfo;
+	const typename = typeIdToTypeName(module,registry)(getterReturnType)
+	const name = readLatin1String(module)(fieldName)
+	return `\t${name}: ${typename};`
+}
+
 const getClassDeclarationHeader = 
 	(module,registry) => 
 	(rawType,baseClassRawType) => {
@@ -78,7 +85,7 @@ const getClassDeclarationHeader =
 const getClassDeclaration = (module,registry) => classInfo => {
 	const {
 		name,baseClassRawType,
-		classFunctions,functions,constructors
+		classFunctions,functions,constructors,properties
 	} = classInfo;
 	const header = getClassDeclarationHeader(module,registry)
 		(name,baseClassRawType)
@@ -86,6 +93,7 @@ const getClassDeclaration = (module,registry) => classInfo => {
 		[header],
 		constructors.map(getClassConstructorDeclaration(module,registry)),
 		classFunctions.map(getClassClassFunctionDeclaration(module,registry)),
+		properties.map(getClassPropertyDeclaration(module,registry)),
 		functions.map(getClassFunctionDeclaration(module,registry)),
 		['}']
 	].flat().join('\n')

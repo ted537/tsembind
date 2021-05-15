@@ -29,7 +29,7 @@ wrappers['_embind_register_class'] = (registry,f) => (...args) => {
 
 	registry.classes[rawType] = {
 		name, baseClassRawType,
-		functions:[],constructors:[],classFunctions:[]
+		functions:[],constructors:[],classFunctions:[],properties:[]
 	}
 	return f(...args)
 }
@@ -55,6 +55,16 @@ wrappers['_embind_register_class_function'] = (registry,f) => (...args) => {
 	registry.classes[rawClassType].functions.push(
 		{methodName,argCount,rawArgTypesAddr}
 	)
+	return f(...args)
+}
+
+wrappers['_embind_register_class_property'] = (registry,f) => (...args) => {
+	const [
+		classType,fieldName,
+		getterReturnType,getterSignature,getter,getterContext,
+		setterArgumentType,setterSignature,setter,setterContext
+	] = args;
+	registry.classes[classType].properties.push({fieldName,getterReturnType})
 	return f(...args)
 }
 
