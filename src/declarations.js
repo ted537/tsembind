@@ -26,7 +26,7 @@ const getFunctionDeclaration = (module,registry) => funcInfo => {
 	const argTypeNames = argTypes.map(typeIdToTypeName(module,registry))
 	const [returnType,...parameterTypes] = argTypeNames;
 	const parameters = typeNamesToParameters(parameterTypes)
-	return `declare function ${nameStr}(${parameters}): ${returnType};`
+	return `${nameStr}(${parameters}): ${returnType};`
 }
 
 const getClassFunctionDeclaration = (module,registry) => funcInfo => {
@@ -110,18 +110,29 @@ const getEnumDeclaration = (module,registry) => enumInfo => {
 
 // TS is not responsible for enforcing number sizes (int8 vs int32 etc)
 const declarationForNumber = (module,registry) => name => {
-	return `type ${name(module)} = Number`
+	return `type ${name(module)} = Number;`
+}
+
+const indent = text => `\t${text}`
+
+const getModuleDeclaration = (module,registry) => {
+	return [
+		"interface CustomEmbindModule {",
+		...registry.functions
+			.map(getFunctionDeclaration(module,registry))
+			.map(indent),
+		"}"
+	].join('\n')
 }
 
 const declarationsForRegistry = (module,registry) => {
 	return [
 		registry.numbers.map(declarationForNumber(module,registry)),
-		registry.functions
-			.map(getFunctionDeclaration(module,registry)),
 		Object.values(registry.classes)
 			.map(getClassDeclaration(module,registry)),
 		Object.values(registry.enums)
-			.map(getEnumDeclaration(module,registry))
+			.map(getEnumDeclaration(module,registry)),
+		[getModuleDeclaration(module,registry)]
 	].flat().join('\n')
 }
 
