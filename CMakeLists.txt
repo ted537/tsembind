@@ -48,3 +48,12 @@ foreach(executable IN ITEMS
 	)
 
 endforeach()
+
+add_executable(nonmodule test/voidfunc.cc)
+target_link_options(nonmodule PUBLIC --bind)
+
+set_property(
+	TARGET nonmodule
+	PROPERTY RUNTIME_OUTPUT_DIRECTORY
+	${PROJECT_SOURCE_DIR}/lib
+)

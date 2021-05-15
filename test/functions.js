@@ -16,6 +16,13 @@ describe('getTypescriptBindings (for simple functions)', ()=> {
 			'declare function f(): void;'
 		)
 	} )
+	it('should generate a void function declaration for non-modularized', 
+	async ()=>{
+		assert.equal(
+			lastLine(await generateTypescriptBindings('lib/nonmodule.js')),
+			'declare function f(): void;'
+		)
+	} )
 	it('should generate a declaration for a function returning an integer', 
 		async ()=>{
 			assert.equal(
