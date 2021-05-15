@@ -70,7 +70,6 @@ const getClassDeclarationHeader =
 		return `declare class ${humanName} {`
 	}
 	else {
-		console.log(`baseClassRawType=${baseClassRawType}`)
 		const baseHumanName = typeIdToTypeName(module,registry)(baseClassRawType)
 		return `declare class ${humanName} extends ${baseHumanName} {`
 	}

@@ -24,9 +24,19 @@ const getDeclarations = module => {
 	return declarationsForRegistry(module,registry)
 }
 
+const moduleFromRequire = async requireResult => {
+	if (typeof requireResult === "function")
+		return await requireResult();
+	// TODO handle -s EXPORT_NAME
+	else {
+		await new Promise(res=>requireResult.onRuntimeInitialized=res)
+		return requireResult
+	}
+}
+
 const generateTypescriptBindings = async inputFilename => {
 	const absoluteInputFilename = path.resolve(process.cwd(),inputFilename)
-	const module = await require(absoluteInputFilename)();
+	const module = await moduleFromRequire(require(absoluteInputFilename))
 	return getDeclarations(module)
 }
 
