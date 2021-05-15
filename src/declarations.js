@@ -3,10 +3,9 @@ const {readLatin1String, heap32VectorToArray} = require('./embind.js')
 
 // TODO hijack register void
 const typeIdToTypeName = (module,registry) => typeId => {
-	// TODO assert that we only have one void type
 	if (!(typeId in registry.types)) {
 		console.warn(`typeId=${typeId} not found in registry`)
-		return 'any'
+		return 'unknown'
 	}
 
 	return registry.types[typeId](module)

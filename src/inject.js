@@ -64,6 +64,9 @@ wrappers['_embind_register_class_property'] = (registry,f) => (...args) => {
 		getterReturnType,getterSignature,getter,getterContext,
 		setterArgumentType,setterSignature,setter,setterContext
 	] = args;
+	// NOTE should we be asserting that 
+	// getterReturnType === setterArgumentType ?
+	// ... unless that causes false positives due to type coercion
 	registry.classes[classType].properties.push({fieldName,getterReturnType})
 	return f(...args)
 }
