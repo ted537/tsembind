@@ -90,7 +90,7 @@ wrappers['_embind_register_integer'] = (registry,f) => (...args) => {
 
 wrappers['_embind_register_float'] = (registry,f) => (...args) => {
 	const [rawType, name, size] = args;
-	const getName = () => "Float"
+	const getName = readNameCamelCased(name)
 	registry.types[rawType] = getName
 	registry.numbers.push(getName)
 	return f(...args)
