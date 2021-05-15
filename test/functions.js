@@ -77,6 +77,14 @@ describe('getTypescriptBindings (for simple functions)', ()=> {
 			)
 		}
 	)
+	it('should generate a declaration for a function accepting an emval',
+		async ()=>{
+			assert.equal(
+				findFunctions(await generateTypescriptBindings('lib/emval.js')),
+				'\tf(arg0: any): void;'
+			)
+		}
+	)
 	it('should generate declarations for function overloads',
 		async ()=>{
 			assert.equal(

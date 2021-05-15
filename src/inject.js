@@ -108,6 +108,12 @@ wrappers['_embind_register_void'] = (registry,f) => (...args) => {
 	return f(...args);
 }
 
+wrappers['_embind_register_emval'] = (registry,f) => (...args) => {
+	const [rawType, name] = args;
+	registry.types[rawType] = () => "any"
+	return f(...args);
+}
+
 wrappers['_embind_register_bool'] = (registry,f) => (...args) => {
 	const [rawType,name,size,trueValue,falseValue] = args;
 	registry.types[rawType] = () => "boolean"

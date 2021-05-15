@@ -5,6 +5,7 @@ include_directories(src)
 
 add_executable(examplelib test/examplelib.cc)
 add_executable(voidfunc test/voidfunc.cc)
+add_executable(emval test/emval.cc)
 add_executable(optimized test/voidfunc.cc)
 add_executable(overload test/overload.cc)
 add_executable(return_int test/return_int.cc)
@@ -29,7 +30,7 @@ foreach(executable IN ITEMS
 		# general
 		examplelib 
 		# free functions	
-		voidfunc identity sum overload
+		voidfunc identity sum overload emval
 		return_int return_float return_bool return_string
 		optimized
 		# classes
