@@ -3,6 +3,9 @@
 Generate `.d.ts` files using your existing Emscripten projects.
 Re-compiling is not necessary!
 
+![image](https://user-images.githubusercontent.com/8276517/118375496-fe84d100-b58f-11eb-8999-a00c8cf66aa1.png)
+
+
 Installation:
 ```
 npm i -g git+https://github.com/ted537/tsembind.git
