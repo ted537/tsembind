@@ -5,6 +5,7 @@ include_directories(src)
 
 add_executable(examplelib test/examplelib.cc)
 add_executable(voidfunc test/voidfunc.cc)
+add_executable(optimized test/voidfunc.cc)
 add_executable(overload test/overload.cc)
 add_executable(return_int test/return_int.cc)
 add_executable(return_float test/return_float.cc)
@@ -30,6 +31,7 @@ foreach(executable IN ITEMS
 		# free functions	
 		voidfunc identity sum overload
 		return_int return_float return_bool return_string
+		optimized
 		# classes
 		emptyclass constructor constructor_args subclass
 		classmethod classclassmethod classmethodmultiparam
@@ -48,6 +50,8 @@ foreach(executable IN ITEMS
 	)
 
 endforeach()
+
+target_link_options(optimized PUBLIC -O3)
 
 add_executable(nonmodule test/voidfunc.cc)
 target_link_options(nonmodule PUBLIC --bind)

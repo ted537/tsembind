@@ -6,14 +6,16 @@ const readName = name => module =>
 const readNameCamelCased = name => module =>
 	CamelCase(readLatin1String(module)(name))
 
+const wrappers = {};
+
 // inject required typing info during register_function() and similar
-const wrapRegisterFunction = (registry,f) => (...args) => {
+wrappers['_embind_register_function'] = (registry,f) => (...args) => {
 	const [name,argCount, rawArgTypesAddr, signature, rawInvoker,fn] = args;
 	registry.functions.push({name,argCount,rawArgTypesAddr})
 	return f(...args)
 }
 
-const wrapRegisterClass = (registry,f) => (...args) => {
+wrappers['_embind_register_class'] = (registry,f) => (...args) => {
 	const [
 		rawType,rawPointerType,rawConstPointerType, 
 		baseClassRawType, 
@@ -32,7 +34,7 @@ const wrapRegisterClass = (registry,f) => (...args) => {
 	return f(...args)
 }
 
-const wrapRegisterSmartPtr = (registry,f) => (...args) => {
+wrappers['_embind_register_smart_ptr'] = (registry,f) => (...args) => {
 	const [
 		rawType,rawPointeeType,
 		name,sharingPolicy,
@@ -48,7 +50,7 @@ const wrapRegisterSmartPtr = (registry,f) => (...args) => {
 	return f(...args);
 }
 
-const wrapRegisterClassFunction = (registry,f) => (...args) => {
+wrappers['_embind_register_class_function'] = (registry,f) => (...args) => {
 	const [rawClassType,methodName,argCount,rawArgTypesAddr] = args;
 	registry.classes[rawClassType].functions.push(
 		{methodName,argCount,rawArgTypesAddr}
@@ -56,7 +58,9 @@ const wrapRegisterClassFunction = (registry,f) => (...args) => {
 	return f(...args)
 }
 
-const wrapRegisterClassClassFunction = (registry,f) => (...args) => {
+wrappers['_embind_register_class_class_function'] = 
+		(registry,f) => (...args) => 
+{
 	const [
 		rawClassType,methodName,argCount,rawArgTypesAddr,
 		invokerSignature, rawInvoker, fn
@@ -67,7 +71,7 @@ const wrapRegisterClassClassFunction = (registry,f) => (...args) => {
 	return f(...args)
 }
 
-const wrapRegisterClassConstructor = (registry,f) => (...args) => {
+wrappers['_embind_register_class_constructor'] = (registry,f) => (...args) => {
 	const [
 		rawClassType,argCount,rawArgTypesAddr,
 		invokerSignature, invoker, rawConstructor
@@ -76,7 +80,7 @@ const wrapRegisterClassConstructor = (registry,f) => (...args) => {
 	return f(...args)
 }
 
-const wrapRegisterInt = (registry,f) => (...args) => {
+wrappers['_embind_register_integer'] = (registry,f) => (...args) => {
 	const [primitiveType, name, size, minRange, maxRange] = args;
 	const getName = readNameCamelCased(name)
 	registry.types[primitiveType] = getName
@@ -84,7 +88,7 @@ const wrapRegisterInt = (registry,f) => (...args) => {
 	return f(...args)
 }
 
-const wrapRegisterFloat = (registry,f) => (...args) => {
+wrappers['_embind_register_float'] = (registry,f) => (...args) => {
 	const [rawType, name, size] = args;
 	const getName = () => "Float"
 	registry.types[rawType] = getName
@@ -92,35 +96,44 @@ const wrapRegisterFloat = (registry,f) => (...args) => {
 	return f(...args)
 }
 
-const wrapRegisterString = (registry,f) => (...args) => {
+wrappers['_embind_register_std_string'] = (registry,f) => (...args) => {
 	const [rawType,name] = args;
 	registry.types[rawType] = () => "string"
 	return f(...args)
 }
 
-const wrapRegisterVoid = (registry,f) => (...args) => {
+wrappers['_embind_register_void'] = (registry,f) => (...args) => {
 	const [rawType, name] = args;
 	registry.types[rawType] = () => "void"
 	return f(...args);
 }
 
-const wrapRegisterBool = (registry,f) => (...args) => {
+wrappers['_embind_register_bool'] = (registry,f) => (...args) => {
 	const [rawType,name,size,trueValue,falseValue] = args;
 	registry.types[rawType] = () => "boolean"
 	return f(...args)
 }
 
-const wrapRegisterEnum = (registry,f) => (...args) => {
+wrappers['_embind_register_enum'] = (registry,f) => (...args) => {
 	const [rawType,name,size,isSigned] = args;
 	registry.types[rawType] = readName(name)
 	registry.enums[rawType] = {getName:readName(name),values:[]}
 	return f(...args)
 }
 
-const wrapRegisterEnumValue = (registry,f) => (...args) => {
+wrappers['_embind_register_enum_value'] = (registry,f) => (...args) => {
 	const [rawEnumType,name,enumValue] = args;
 	registry.enums[rawEnumType].values.push({name,enumValue})
 	return f(...args)
+}
+
+// add aliases for __embind_register_function() and the like
+for (name in wrappers) wrappers[`_${name}`] = wrappers[name]
+
+const originalName = func => {
+	const source = func.toString()
+	if (!source.startsWith("function ")) return null;
+	return source.slice("function ".length,source.indexOf("("))
 }
 
 const injectBindings = info => {
@@ -128,50 +141,24 @@ const injectBindings = info => {
 		functions: [], numbers: [],
 		classes: {}, types: {}, enums: {}
 	}
-	const {
-		_embind_register_function,
-		_embind_register_bool,
-		_embind_register_std_string,
-		_embind_register_class,
-		_embind_register_class_function,
-		_embind_register_class_class_function,
-		_embind_register_class_constructor,
-		_embind_register_smart_ptr,
-		_embind_register_integer,
-		_embind_register_float,
-		_embind_register_void,
-		_embind_register_enum,
-		_embind_register_enum_value
-	} = info.env;
-	const injectedEnv = {...info.env,
-		_embind_register_function: 
-			wrapRegisterFunction(registry,_embind_register_function),
-		_embind_register_enum:
-			wrapRegisterEnum(registry,_embind_register_enum),
-		_embind_register_enum_value:
-			wrapRegisterEnumValue(registry,_embind_register_enum_value),
-		_embind_register_class:
-			wrapRegisterClass(registry,_embind_register_class),
-		_embind_register_integer:
-			wrapRegisterInt(registry,_embind_register_integer),
-		_embind_register_float:
-			wrapRegisterFloat(registry,_embind_register_float),
-		_embind_register_class_function:
-			wrapRegisterClassFunction(registry,_embind_register_class_function),
-		_embind_register_class_class_function:
-			wrapRegisterClassClassFunction(registry,_embind_register_class_class_function),
-		_embind_register_class_constructor:
-			wrapRegisterClassConstructor(registry,_embind_register_class_constructor),
-		_embind_register_smart_ptr:
-			wrapRegisterSmartPtr(registry,_embind_register_smart_ptr),
-		_embind_register_void:
-			wrapRegisterVoid(registry,_embind_register_void),
-		_embind_register_bool:
-			wrapRegisterBool(registry,_embind_register_bool),
-		_embind_register_std_string:
-			wrapRegisterString(registry,_embind_register_std_string)
+
+	const injectObject = ([name,obj]) => {
+		if (typeof obj=== "object") {
+			return [
+				name,
+				Object.fromEntries(
+					Object.entries(obj).map(injectObject)
+				)
+			]
+		}
+		const wrapper = wrappers[name] || wrappers[originalName(obj)]
+		if (wrapper) return [name,wrapper(registry,obj)]
+
+		return [name,obj]
 	}
-	const injectedInfo = {...info,env:injectedEnv}
+	const injectedInfo = Object.fromEntries(
+		Object.entries(info).map(injectObject)
+	)
 	return {registry, injectedInfo}
 }
 

@@ -23,6 +23,13 @@ describe('getTypescriptBindings (for simple functions)', ()=> {
 			'declare function f(): void;'
 		)
 	} )
+	it('should generate a void function declaration after optimization',
+	async ()=>{
+		assert.equal(
+			lastLine(await generateTypescriptBindings('lib/optimized.js')),
+			'declare function f(): void;'
+		)
+	} )
 	it('should generate a declaration for a function returning an integer', 
 		async ()=>{
 			assert.equal(
