@@ -73,11 +73,11 @@ const getClassDeclarationHeader =
 	const humanName = readLatin1String(module)(rawType)
 	const hasParent = baseClassRawType !== 0
 	if (!hasParent) {
-		return `export interface ${humanName} {`
+		return `export class ${humanName} {`
 	}
 	else {
 		const baseHumanName = typeIdToTypeName(module,registry)(baseClassRawType)
-		return `export interface ${humanName} extends ${baseHumanName} {`
+		return `export class ${humanName} extends ${baseHumanName} {`
 	}
 }
 
@@ -98,6 +98,19 @@ const getClassDeclaration = (module,registry) => classInfo => {
 	].flat().join('\n')
 }
 
+const getClassInterfaceDeclaration = (module,registry) => classInfo => {
+	const {name} = classInfo
+	const humanName = readLatin1String(module)(name)
+	return `\t${humanName}: typeof ${humanName};`
+}
+
+// identical
+const getEnumInterfaceDeclaration = (module,registry) => enumInfo => {
+	const {getName,values} = enumInfo;
+	const name = getName(module)
+	return `\t${name}: typeof ${name}`
+}
+
 const getEnumValueDeclaration = (module,registry) => valInfo => {
 	const {name,enumValue} = valInfo;
 	const humanName = readLatin1String(module)(name)
@@ -108,7 +121,7 @@ const getEnumDeclaration = (module,registry) => enumInfo => {
 	const {getName,values} = enumInfo;
 	const name = getName(module)
 	return [
-		[`enum ${name} {`],
+		[`export enum ${name} {`],
 		values.map(getEnumValueDeclaration(module,registry)),
 		['}']
 	].flat().join('\n')
@@ -128,6 +141,10 @@ const getModuleDeclaration = (module,registry) => {
 		...registry.functions
 			.map(getFunctionDeclaration(module,registry))
 			.map(indent),
+		...Object.values(registry.classes)
+			.map(getClassInterfaceDeclaration(module,registry)),
+		...Object.values(registry.enums)
+			.map(getEnumInterfaceDeclaration(module,registry)),
 		"}",
 		"declare function factory(): Promise<CustomEmbindModule>;",
 		"export default factory;"
