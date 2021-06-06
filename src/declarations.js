@@ -23,13 +23,13 @@ const getFunctionDeclaration = (module,registry) => funcInfo => {
 const getEnumInterfaceDeclaration = (module,registry) => enumInfo => {
 	const {getName,values} = enumInfo;
 	const name = getName(module)
-	return `\t${name}: ${name}`
+	return `\t${name}: ${name}Enum`
 }
 
-const getEnumValueDeclaration = (module,registry) => valInfo => {
+const getEnumValueDeclaration = (module,registry,enumName) => valInfo => {
 	const {name,enumValue} = valInfo;
 	const humanName = readLatin1String(module)(name)
-	return `\t${humanName} = ${enumValue},`
+	return `\t${humanName}: ${enumName},`
 }
 
 const getEnumDeclaration = (module,registry) => enumInfo => {
@@ -37,7 +37,11 @@ const getEnumDeclaration = (module,registry) => enumInfo => {
 	const name = getName(module)
 	return [
 		`declare const valid${name}: unique symbol;`,
-		`export interface ${name} {[valid${name}]: true}`
+		`export interface ${name} {[valid${name}]: true}`,
+		`interface ${name}Enum {`,
+		...enumInfo.values.map(
+			getEnumValueDeclaration(module,registry,name)),
+		'}'
 	].join('\n')
 }
 
