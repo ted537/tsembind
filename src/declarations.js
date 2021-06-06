@@ -102,7 +102,7 @@ const getClassDeclaration = (module,registry) => classInfo => {
 const getClassInterfaceDeclaration = (module,registry) => classInfo => {
 	const {name} = classInfo
 	const humanName = readLatin1String(module)(name)
-	return `\t${humanName}: typeof ${humanName};`
+	return `\t${humanName}: class implements ${humanName} {};`
 }
 
 // identical
@@ -121,11 +121,7 @@ const getEnumValueDeclaration = (module,registry) => valInfo => {
 const getEnumDeclaration = (module,registry) => enumInfo => {
 	const {getName,values} = enumInfo;
 	const name = getName(module)
-	return [
-		[`export enum ${name} {`],
-		values.map(getEnumValueDeclaration(module,registry)),
-		['}']
-	].flat().join('\n')
+	return `export type ${name} = {[valid_${name}]: true}`
 }
 
 
