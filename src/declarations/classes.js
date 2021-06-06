@@ -15,7 +15,7 @@ const indent = line => `\t${line}`
 
 // user facing type
 const getClassInstanceDeclaration = (module,registry) => classInfo => {
-	const name = typeIdToTypeName(module,registry)(classInfo.rawType);
+	const name = readLatin1String(module)(classInfo.name);
 	return [
 		`declare const valid${name}: unique symbol;`,
 		`export interface ${name} {`,
@@ -40,23 +40,24 @@ const getClassClassDeclaration = (module,registry) => classInfo => {
 			map(getClassConstructorDeclaration(module,registry)).
 			map(indent),
 		...classInfo.classFunctions.
-			map(getClassClassFunctionDeclaration(module,registry)).
-			map(indent)
+			map(getClassClassFunctionDeclaration(module,registry))
+			.map(indent),
 		`}`,
 	].join('\n')
 }
 
 // binding
 const getClassModuleDeclaration = (module,registry) => classInfo => {
-	//const name = typeIdToTypeName(module,registry)(classInfo.rawType);
 	const name = readLatin1String(module)(classInfo.name);
 	return `${name}: ${name}Class;`
 }
 
-module.exports = {
-	getClassInstanceDeclaration,
-	getClassClassDeclaration,
-	getClassModuleDeclaration
+
+const getClassExternalDeclaration = (module,registry) => classInfo => {
+	return [
+		getClassInstanceDeclaration(module,registry)(classInfo),
+		getClassClassDeclaration(module,registry)(classInfo)
+	].join('\n')
 }
 
 const getClassFunctionDeclaration = (module,registry) => funcInfo => {
@@ -67,17 +68,17 @@ const getClassFunctionDeclaration = (module,registry) => funcInfo => {
 	const [returnType, instanceType, ...parameterTypes] = argTypeNames;
 	const parameters = typeNamesToParameters(parameterTypes)
 
-	return `\t${humanName}(${parameters}): ${returnType};`
+	return `${humanName}(${parameters}): ${returnType};`
 }
 
-const getClassConstructorDeclaration = (module,registry) => funcInfo => {
+const getClassConstructorDeclaration = (module,registry,name) => funcInfo => {
 	const {argCount, rawArgTypesAddr} = funcInfo;
 	const argTypes = heap32VectorToArray(module)(argCount, rawArgTypesAddr);
 	const argTypeNames = argTypes.map(typeIdToTypeName(module,registry))
 	const [returnType, ...parameterTypes] = argTypeNames;
 	const parameters = typeNamesToParameters(parameterTypes)
 
-	return `\tconstructor(${parameters});`
+	return `new (${parameters}): ${name};`
 }
 
 const getClassClassFunctionDeclaration = (module,registry) => funcInfo => {
@@ -88,12 +89,18 @@ const getClassClassFunctionDeclaration = (module,registry) => funcInfo => {
 	const [returnType, ...parameterTypes] = argTypeNames;
 	const parameters = typeNamesToParameters(parameterTypes)
 
-	return `\tstatic ${humanName}(${parameters}): ${returnType};`
+	return `static ${humanName}(${parameters}): ${returnType};`
 }
 
 const getClassPropertyDeclaration = (module,registry) => funcInfo => {
 	const {fieldName,getterReturnType} = funcInfo;
 	const typename = typeIdToTypeName(module,registry)(getterReturnType)
 	const name = readLatin1String(module)(fieldName)
-	return `\t${name}: ${typename};`
+	return `${name}: ${typename};`
+}
+
+
+module.exports = {
+	getClassExternalDeclaration,
+	getClassModuleDeclaration
 }

@@ -4,8 +4,7 @@ const {
 	typeIdToTypeName, typeNamesToParameters
 } = require('./embind.js')
 const {
-	getClassInstanceDeclaration,getClassClassDeclaration,
-	getClassModuleDeclaration
+	getClassExternalDeclaration, getClassModuleDeclaration
 } = require('./declarations/classes.js')
 
 
@@ -24,7 +23,7 @@ const getFunctionDeclaration = (module,registry) => funcInfo => {
 const getEnumInterfaceDeclaration = (module,registry) => enumInfo => {
 	const {getName,values} = enumInfo;
 	const name = getName(module)
-	return `\t${name}: typeof ${name}`
+	return `\t${name}: ${name}`
 }
 
 const getEnumValueDeclaration = (module,registry) => valInfo => {
@@ -36,7 +35,10 @@ const getEnumValueDeclaration = (module,registry) => valInfo => {
 const getEnumDeclaration = (module,registry) => enumInfo => {
 	const {getName,values} = enumInfo;
 	const name = getName(module)
-	return `export type ${name} = {[valid_${name}]: true}`
+	return [
+		`declare const valid${name}: unique symbol;`,
+		`export interface ${name} {[valid${name}]: true}`
+	].join('\n')
 }
 
 
@@ -70,10 +72,8 @@ const declarationsForRegistry = (module,registry) => {
 		[ '// define type aliases for various native number types' ],
 		registry.numbers.map(declarationForNumber(module,registry)),
 		[ '' ],
-		/*
 		Object.values(registry.classes)
-			.map(getClassInstanceDeclaration(module,registry)),
-		*/
+			.map(getClassExternalDeclaration(module,registry)),
 		Object.values(registry.enums)
 			.map(getEnumDeclaration(module,registry)),
 		[getModuleDeclaration(module,registry)]
