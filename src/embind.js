@@ -18,4 +18,22 @@ const heap32VectorToArray = module => (count, firstElement) => {
 	return array;                                                             
 } 
 
-module.exports = {readLatin1String, heap32VectorToArray}
+const typeIdToTypeName = (module,registry) => typeId => {
+	if (!(typeId in registry.types)) {
+		console.warn(`typeId=${typeId} not found in registry`)
+		return 'unknown'
+	}
+
+	return registry.types[typeId](module)
+}
+//
+// can't give names here unfortunately
+const typeNamesToParameters = typenames =>
+	typenames.map(
+		(typename,idx) => `arg${idx}: ${typename}`
+	).join(', ')
+
+module.exports = {
+	readLatin1String, heap32VectorToArray, 
+	typeIdToTypeName, typeNamesToParameters
+};
