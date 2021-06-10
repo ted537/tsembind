@@ -37,7 +37,7 @@ const getClassClassDeclaration = (module,registry) => classInfo => {
 	return [
 		`declare interface ${name}Class {`,
 		...classInfo.constructors.
-			map(getClassConstructorDeclaration(module,registry)).
+			map(getClassConstructorDeclaration(module,registry,name)).
 			map(indent),
 		...classInfo.classFunctions.
 			map(getClassClassFunctionDeclaration(module,registry))
@@ -89,7 +89,7 @@ const getClassClassFunctionDeclaration = (module,registry) => funcInfo => {
 	const [returnType, ...parameterTypes] = argTypeNames;
 	const parameters = typeNamesToParameters(parameterTypes)
 
-	return `static ${humanName}(${parameters}): ${returnType};`
+	return `${humanName}(${parameters}): ${returnType};`
 }
 
 const getClassPropertyDeclaration = (module,registry) => funcInfo => {
