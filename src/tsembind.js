@@ -19,9 +19,9 @@ WebAssembly.instantiate = wrapWebAssemblyInit(WebAssembly.instantiate)
 const registryForEmscriptenModule = module =>
 	registries.get(module.asm)
 
-const getDeclarations = module => {
+const getDeclarations = (module,hint) => {
 	const registry = registryForEmscriptenModule(module);
-	return declarationsForRegistry(module,registry)
+	return declarationsForRegistry(module,registry,hint)
 }
 
 const moduleFromRequire = async requireResult => {
@@ -34,10 +34,10 @@ const moduleFromRequire = async requireResult => {
 	}
 }
 
-const generateTypescriptBindings = async inputFilename => {
+const generateTypescriptBindings = async (inputFilename,hint) => {
 	const absoluteInputFilename = path.resolve(process.cwd(),inputFilename)
 	const module = await moduleFromRequire(require(absoluteInputFilename))
-	return getDeclarations(module)
+	return getDeclarations(module,hint)
 }
 
 module.exports = {generateTypescriptBindings}
