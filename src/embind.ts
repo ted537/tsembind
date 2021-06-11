@@ -1,5 +1,5 @@
 import { EmscriptenModule } from './emscripten'
-import { InjectionRegistry } from './registry';
+import { InjectionRegistry } from './injection/registry';
 
 // duplicate definitions from actual embind.js because
 // the original definitions arehidden behind closures

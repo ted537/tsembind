@@ -4,7 +4,7 @@ import {declarationsForRegistry} from './declarations'
 
 import {WASMExports} from './wasm'
 import {EmscriptenModule} from './emscripten'
-import { InjectionRegistry } from './registry'
+import { InjectionRegistry } from './injection/registry'
 import { emptyHintFunction, HintFunction } from './hint'
 
 const registries = new Map<WASMExports, InjectionRegistry>();

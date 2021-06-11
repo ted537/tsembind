@@ -1,6 +1,6 @@
 import {readLatin1String, heap32VectorToArray} from './embind.js'
 import { EmscriptenModule } from './emscripten';
-import { InjectionRegistry } from './registry';
+import { InjectionRegistry } from './injection/registry';
 import {CamelCase} from './string'
 
 const readName = (namePtr:number) => (module: EmscriptenModule) => 

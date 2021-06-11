@@ -5,10 +5,10 @@ import {
 } from './embind'
 import { EmscriptenModule } from './emscripten';
 import { HintFunction } from './hint';
-import { InjectionRegistry, FuncInfo, EnumInfo, EnumValueInfo, StringGetter } from './registry';
+import { InjectionRegistry, FuncInfo, EnumInfo, EnumValueInfo, StringGetter } from './injection/registry';
 import {
 	getClassExternalDeclaration, getClassModuleDeclaration
-} from './declarations/classes'
+} from './declaration/classes'
 
 
 const getFunctionDeclaration = 

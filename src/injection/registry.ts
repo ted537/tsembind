@@ -1,4 +1,4 @@
-import { EmscriptenModule } from "./emscripten";
+import { EmscriptenModule } from "../emscripten";
 
 export interface FuncInfo {
     name: number

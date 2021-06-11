@@ -3,7 +3,7 @@
 //    this type holds instance-level things such as functions and members
 
 import { EmscriptenModule } from "../emscripten";
-import { ClassClassFunctionInfo, ClassConstructorInfo, ClassFunctionInfo, ClassInfo, ClassPropertyInfo, FuncInfo, InjectionRegistry } from "../registry";
+import { ClassClassFunctionInfo, ClassConstructorInfo, ClassFunctionInfo, ClassInfo, ClassPropertyInfo, FuncInfo, InjectionRegistry } from "../injection/registry";
 
 // 2) internal class with constructors / static functions.
 //    this is what is actually attached to the module instance
