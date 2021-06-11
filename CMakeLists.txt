@@ -48,7 +48,7 @@ foreach(executable IN ITEMS
 	set_property(
 		TARGET ${executable}
 		PROPERTY RUNTIME_OUTPUT_DIRECTORY
-		${PROJECT_SOURCE_DIR}/lib
+		${PROJECT_SOURCE_DIR}/test/lib
 	)
 
 endforeach()
@@ -61,5 +61,5 @@ target_link_options(nonmodule PUBLIC --bind)
 set_property(
 	TARGET nonmodule
 	PROPERTY RUNTIME_OUTPUT_DIRECTORY
-	${PROJECT_SOURCE_DIR}/lib
+	${PROJECT_SOURCE_DIR}/test/lib
 )
