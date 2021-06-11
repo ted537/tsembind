@@ -9,8 +9,10 @@
   },
   "scripts": {
     "test-only": "mocha",
+    "build": "npm run make && npm run tsc",
     "test": "npm run build && npm run test-only",
-    "build": "emcmake cmake -S . -B build && emmake make -C build"
+    "make": "emcmake cmake -S . -B build && emmake make -C build",
+    "tsc": "tsc && chmod +x src/cmd.js"
   },
   "repository": {
     "type": "git",
@@ -26,11 +28,11 @@
   },
   "homepage": "https://github.com/ted537/tsembind#readme",
   "dependencies": {
-    "commander": "^7.2.0",
-    "node-typescript": "^0.1.3"
+    "commander": "^7.2.0"
   },
   "devDependencies": {
     "@types/node": "^15.3.0",
-    "mocha": "^8.4.0"
+    "mocha": "^8.4.0",
+    "typescript": "^4.3.2"
   }
 }

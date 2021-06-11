@@ -2,3 +2,5 @@ build
 lib
 node_modules
 docs
+
+src/**/*.js

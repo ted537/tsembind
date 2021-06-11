@@ -1,0 +1,1 @@
+export type WASMExports = WebAssembly.ModuleExportDescriptor[];
