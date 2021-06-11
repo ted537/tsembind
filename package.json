@@ -8,9 +8,9 @@
     "test": "test"
   },
   "scripts": {
-    "test-only": "mocha test/**/*.js",
+	"test-tsembind": "node test/generate-d-ts-files.js",
+    "test-tsc": "tsc test/**/*.ts",
     "build": "npm run make && npm run tsc",
-    "test": "npm run build && npm run test-only",
     "make": "emcmake cmake -S . -B build && emmake make -C build",
     "tsc": "tsc && chmod +x src/cmd.js"
   },
