@@ -36,7 +36,9 @@ const getDeclarations = (module: EmscriptenModule,hint: HintFunction) => {
 }
 
 interface GlobalEmscriptenModule { onRuntimeInitialized: any}
-async function moduleFromRequire(requireResult: CallableFunction | GlobalEmscriptenModule) {
+async function moduleFromRequire(
+		requireResult: CallableFunction | GlobalEmscriptenModule
+) {
 	if (typeof requireResult === "function")
 		return await requireResult();
 	else {
