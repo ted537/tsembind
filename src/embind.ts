@@ -1,5 +1,5 @@
 import { EmscriptenModule } from './emscripten'
-import { InjectionRegistry } from './injection/registry';
+import { Registry } from './injection/registry';
 
 // duplicate definitions from actual embind.js because
 // the original definitions arehidden behind closures
@@ -25,7 +25,7 @@ export const heap32VectorToArray =
 } 
 
 export const typeIdToTypeName = 
-	(module: EmscriptenModule,registry: InjectionRegistry) => 
+	(module: EmscriptenModule,registry: Registry) => 
 	(typeId: number) =>
 {
 	if (!(typeId in registry.types)) {

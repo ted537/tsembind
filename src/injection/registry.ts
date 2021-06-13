@@ -1,41 +1,41 @@
 import { EmscriptenModule } from "../emscripten";
 
-export interface FuncInfo {
+export interface FreeFunction {
     name: number
     argCount: number
     rawArgTypesAddr: number
 }
 
-export interface ClassPropertyInfo {
+export interface MemberProperty {
      fieldName: number, 
      getterReturnType: number
 }
 
-export interface ClassFunctionInfo {
+export interface MemberFunction {
     methodName: number;
     argCount: number;
     rawArgTypesAddr: number;
 }
 
-export interface ClassConstructorInfo {
+export interface Constructor {
     argCount: number;
     rawArgTypesAddr: number;
 }
 
-export interface ClassClassFunctionInfo {
+export interface StaticFunction {
     methodName: number;
     argCount: number;
     rawArgTypesAddr: number;
 }
 
-export interface ClassInfo {
+export interface Class {
     name: number;
     baseClassRawType: number;
 
-    properties: ClassPropertyInfo[]
-    functions: ClassFunctionInfo[]
-    classFunctions: ClassClassFunctionInfo[]
-    constructors: ClassConstructorInfo[]
+    properties: MemberProperty[]
+    functions: MemberFunction[]
+    classFunctions: StaticFunction[]
+    constructors: Constructor[]
 }
 
 export interface EnumInfo {
@@ -49,10 +49,10 @@ export interface EnumValueInfo {
 }
 
 export type StringGetter = (module: EmscriptenModule) => string
-export interface InjectionRegistry {
+export interface Registry {
     types: Record<number,StringGetter>
-    functions: FuncInfo[]
-    classes: Record<number,ClassInfo>
+    functions: FreeFunction[]
+    classes: Record<number,Class>
     numbers: StringGetter[]
     enums: Record<number,EnumInfo>
 }

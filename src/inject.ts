@@ -1,6 +1,6 @@
 import {readLatin1String, heap32VectorToArray} from './embind.js'
 import { EmscriptenModule } from './emscripten';
-import { InjectionRegistry } from './injection/registry';
+import { Registry } from './injection/registry';
 import {CamelCase} from './string'
 
 const readName = (namePtr:number) => (module: EmscriptenModule) => 
@@ -12,14 +12,14 @@ const wrappers: Record<string,CallableFunction> = {};
 
 // inject required typing info during register_function() and similar
 wrappers['_embind_register_function'] = 
-		(registry: InjectionRegistry,f:any) => (...args: any[]) => {
+		(registry: Registry,f:any) => (...args: any[]) => {
 	const [name,argCount, rawArgTypesAddr, signature, rawInvoker,fn] = args;
 	registry.functions.push({name,argCount,rawArgTypesAddr})
 	return f(...args)
 }
 
 wrappers['_embind_register_class'] = 
-		(registry: InjectionRegistry, f:any) => (...args: any[]) => {
+		(registry: Registry, f:any) => (...args: any[]) => {
 	const [
 		rawType,rawPointerType,rawConstPointerType, 
 		baseClassRawType, 
@@ -39,7 +39,7 @@ wrappers['_embind_register_class'] =
 }
 
 wrappers['_embind_register_smart_ptr'] = 
-		(registry: InjectionRegistry,f: any) => (...args: any[]) => {
+		(registry: Registry,f: any) => (...args: any[]) => {
 	const [
 		rawType,rawPointeeType,
 		name,sharingPolicy,
@@ -56,7 +56,7 @@ wrappers['_embind_register_smart_ptr'] =
 }
 
 wrappers['_embind_register_class_function'] = 
-		(registry: InjectionRegistry,f: any) => (...args: any[]) => {
+		(registry: Registry,f: any) => (...args: any[]) => {
 	const [rawClassType,methodName,argCount,rawArgTypesAddr] = args;
 	registry.classes[rawClassType].functions.push(
 		{methodName,argCount,rawArgTypesAddr}
@@ -65,7 +65,7 @@ wrappers['_embind_register_class_function'] =
 }
 
 wrappers['_embind_register_class_property'] = 
-		(registry: InjectionRegistry,f: any) => (...args: any[]) => {
+		(registry: Registry,f: any) => (...args: any[]) => {
 	const [
 		classType,fieldName,
 		getterReturnType,getterSignature,getter,getterContext,
@@ -79,7 +79,7 @@ wrappers['_embind_register_class_property'] =
 }
 
 wrappers['_embind_register_class_class_function'] = 
-		(registry: InjectionRegistry,f: any) => (...args: any[]) => 
+		(registry: Registry,f: any) => (...args: any[]) => 
 {
 	const [
 		rawClassType,methodName,argCount,rawArgTypesAddr,
@@ -92,7 +92,7 @@ wrappers['_embind_register_class_class_function'] =
 }
 
 wrappers['_embind_register_class_constructor'] = 
-		(registry: InjectionRegistry,f: any) => (...args: any[]) => {
+		(registry: Registry,f: any) => (...args: any[]) => {
 	const [
 		rawClassType,argCount,rawArgTypesAddr,
 		invokerSignature, invoker, rawConstructor
@@ -102,7 +102,7 @@ wrappers['_embind_register_class_constructor'] =
 }
 
 wrappers['_embind_register_integer'] = 
-		(registry: InjectionRegistry,f: any) => (...args: any[]) => {
+		(registry: Registry,f: any) => (...args: any[]) => {
 	const [primitiveType, name, size, minRange, maxRange] = args;
 	const getName = readNameCamelCased(name)
 	registry.types[primitiveType] = getName
@@ -111,7 +111,7 @@ wrappers['_embind_register_integer'] =
 }
 
 wrappers['_embind_register_float'] = 
-		(registry: InjectionRegistry,f: any) => (...args: any[]) => {
+		(registry: Registry,f: any) => (...args: any[]) => {
 	const [rawType, name, size] = args;
 	const getName = readNameCamelCased(name)
 	registry.types[rawType] = getName
@@ -120,28 +120,28 @@ wrappers['_embind_register_float'] =
 }
 
 wrappers['_embind_register_std_string'] = 
-		(registry: InjectionRegistry,f: any) => (...args: any[]) => {
+		(registry: Registry,f: any) => (...args: any[]) => {
 	const [rawType,name] = args;
 	registry.types[rawType] = () => "string"
 	return f(...args)
 }
 
 wrappers['_embind_register_void'] = 
-		(registry: InjectionRegistry, f: any) => (...args: any[]) => {
+		(registry: Registry, f: any) => (...args: any[]) => {
 	const [rawType, name] = args;
 	registry.types[rawType] = () => "void"
 	return f(...args);
 }
 
 wrappers['_embind_register_emval'] = 
-		(registry: InjectionRegistry, f: any) => (...args: any[]) => {
+		(registry: Registry, f: any) => (...args: any[]) => {
 	const [rawType, name] = args;
 	registry.types[rawType] = () => "any"
 	return f(...args);
 }
 
 wrappers['_embind_register_memory_view'] = 
-		(registry: InjectionRegistry, f: any) => (...args: any[]) => {
+		(registry: Registry, f: any) => (...args: any[]) => {
 	const [rawType, dataTypeIndex, name] = args;
 	const typeMapping = [
         Int8Array,
@@ -159,14 +159,14 @@ wrappers['_embind_register_memory_view'] =
 }
 
 wrappers['_embind_register_bool'] = 
-		(registry: InjectionRegistry, f: any) => (...args: any[]) => {
+		(registry: Registry, f: any) => (...args: any[]) => {
 	const [rawType,name,size,trueValue,falseValue] = args;
 	registry.types[rawType] = () => "boolean"
 	return f(...args)
 }
 
 wrappers['_embind_register_enum'] = 
-		(registry: InjectionRegistry, f: any) => (...args: any[]) => {
+		(registry: Registry, f: any) => (...args: any[]) => {
 	const [rawType,name,size,isSigned] = args;
 	registry.types[rawType] = readName(name)
 	registry.enums[rawType] = {getName:readName(name),values:[]}
@@ -174,7 +174,7 @@ wrappers['_embind_register_enum'] =
 }
 
 wrappers['_embind_register_enum_value'] = 
-		(registry: InjectionRegistry, f: any) => (...args: any[]) => {
+		(registry: Registry, f: any) => (...args: any[]) => {
 	const [rawEnumType,name,enumValue] = args;
 	registry.enums[rawEnumType].values.push({name,enumValue})
 	return f(...args)

@@ -3,7 +3,7 @@
 //    this type holds instance-level things such as functions and members
 
 import { EmscriptenModule } from "../emscripten";
-import { ClassClassFunctionInfo, ClassConstructorInfo, ClassFunctionInfo, ClassInfo, ClassPropertyInfo, FuncInfo, InjectionRegistry } from "../injection/registry";
+import { StaticFunction, Constructor, MemberFunction, Class, MemberProperty, FreeFunction, Registry } from "../injection/registry";
 
 // 2) internal class with constructors / static functions.
 //    this is what is actually attached to the module instance
@@ -18,8 +18,8 @@ const indent = (line: string) => `\t${line}`
 
 // user facing type
 const getClassInstanceDeclaration = 
-		(module: EmscriptenModule, registry: InjectionRegistry) => 
-		(classInfo: ClassInfo) => 
+		(module: EmscriptenModule, registry: Registry) => 
+		(classInfo: Class) => 
 {
 	const name = readLatin1String(module)(classInfo.name);
 	return [
@@ -39,8 +39,8 @@ const getClassInstanceDeclaration =
 
 // internal class
 const getClassClassDeclaration = 
-		(module: EmscriptenModule, registry: InjectionRegistry) => 
-		(classInfo: ClassInfo) => 
+		(module: EmscriptenModule, registry: Registry) => 
+		(classInfo: Class) => 
 {
 	const name = readLatin1String(module)(classInfo.name);
 	return [
@@ -57,16 +57,16 @@ const getClassClassDeclaration =
 
 // binding
 export const getClassModuleDeclaration = 
-		(module: EmscriptenModule, registry: InjectionRegistry) => 
-		(classInfo: ClassInfo) => {
+		(module: EmscriptenModule, registry: Registry) => 
+		(classInfo: Class) => {
 	const name = readLatin1String(module)(classInfo.name);
 	return `${name}: ${name}Class;`
 }
 
 
 export const getClassExternalDeclaration = 
-		(module: EmscriptenModule, registry: InjectionRegistry) => 
-		(classInfo: ClassInfo) => {
+		(module: EmscriptenModule, registry: Registry) => 
+		(classInfo: Class) => {
 	return [
 		getClassInstanceDeclaration(module,registry)(classInfo),
 		getClassClassDeclaration(module,registry)(classInfo)
@@ -74,8 +74,8 @@ export const getClassExternalDeclaration =
 }
 
 const getClassFunctionDeclaration = 
-		(module: EmscriptenModule, registry: InjectionRegistry) => 
-		(funcInfo: ClassFunctionInfo) => {
+		(module: EmscriptenModule, registry: Registry) => 
+		(funcInfo: MemberFunction) => {
 	const {methodName,argCount,rawArgTypesAddr} = funcInfo;
 	const humanName = readLatin1String(module)(methodName);
 	const argTypes = heap32VectorToArray(module)(argCount, rawArgTypesAddr);
@@ -87,8 +87,8 @@ const getClassFunctionDeclaration =
 }
 
 export const getClassConstructorDeclaration = 
-		(module: EmscriptenModule,registry: InjectionRegistry,name: string) => 
-		(constructorInfo: ClassConstructorInfo) => {
+		(module: EmscriptenModule,registry: Registry,name: string) => 
+		(constructorInfo: Constructor) => {
 	const {argCount, rawArgTypesAddr} = constructorInfo;
 	const argTypes = heap32VectorToArray(module)(argCount, rawArgTypesAddr);
 	const argTypeNames = argTypes.map(typeIdToTypeName(module,registry))
@@ -99,8 +99,8 @@ export const getClassConstructorDeclaration =
 }
 
 const getClassClassFunctionDeclaration = 
-		(module: EmscriptenModule, registry: InjectionRegistry) => 
-		(funcInfo: ClassClassFunctionInfo) => {
+		(module: EmscriptenModule, registry: Registry) => 
+		(funcInfo: StaticFunction) => {
 	const {methodName,argCount,rawArgTypesAddr} = funcInfo;
 	const humanName = readLatin1String(module)(methodName);
 	const argTypes = heap32VectorToArray(module)(argCount, rawArgTypesAddr);
@@ -112,8 +112,8 @@ const getClassClassFunctionDeclaration =
 }
 
 const getClassPropertyDeclaration = 
-		(module: EmscriptenModule, registry: InjectionRegistry) => 
-		(propertyInfo: ClassPropertyInfo) => {
+		(module: EmscriptenModule, registry: Registry) => 
+		(propertyInfo: MemberProperty) => {
 	const {fieldName,getterReturnType} = propertyInfo;
 	const typename = typeIdToTypeName(module,registry)(getterReturnType)
 	const name = readLatin1String(module)(fieldName)
