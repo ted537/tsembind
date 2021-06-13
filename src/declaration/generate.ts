@@ -1,15 +1,16 @@
 // transform declaration registry into typescript declarations
-import { EmscriptenModule } from '../emscripten';
-import { HintFunction } from '../hint';
-import {
-	getClassExternalDeclaration, getClassModuleDeclaration
-} from './classes'
-
 import * as Declaration from './registry'
+
+function stringifyParameters(parameters: Declaration.Parameter[]): string {
+	return parameters.map(
+		({name,typename}) => `${name}: ${typename}`
+	).join(', ')
+}
 
 function declarationForFunction(func: Declaration.Function): string {
 	const {name,parameters,returnType} = func
-	return `${name}(${parameters}): ${returnType};`
+	const parametersString: string = stringifyParameters(parameters)
+	return `${name}(${parametersString}): ${returnType};`
 }
 
 /*
