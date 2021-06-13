@@ -1,7 +1,4 @@
-import { EmscriptenModule } from "../emscripten";
-import { Nominal } from "../nominal";
-
-type Pointer = Nominal<number, 'pointer'>
+import { EmscriptenModule, Pointer } from "../emscripten";
 
 export interface FreeFunction {
     name: number
@@ -53,7 +50,7 @@ export interface EnumValueInfo {
 
 export type StringGetter = (module: EmscriptenModule) => string
 export interface Registry {
-    types: Record<number,StringGetter>
+    types: Record<Pointer,StringGetter>
     functions: FreeFunction[]
     classes: Record<number,Class>
     numbers: StringGetter[]

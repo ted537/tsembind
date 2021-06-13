@@ -1,9 +1,11 @@
-import { EmscriptenModule } from './emscripten'
+import { EmscriptenModule, Pointer } from './emscripten'
 import { Registry } from './injection/registry';
 
 // duplicate definitions from actual embind.js because
 // the original definitions arehidden behind closures
-export const readLatin1String = (module: EmscriptenModule) => (ptr:number) => {                                     
+export const readLatin1String = 
+		(module: EmscriptenModule) => 
+		(ptr:Pointer) => {                                     
     let str = "";                                                               
     let c = ptr;                                                                
     while (module.HEAPU8[c]) {                                                  
@@ -26,7 +28,7 @@ export const heap32VectorToArray =
 
 export const typeIdToTypeName = 
 	(module: EmscriptenModule,registry: Registry) => 
-	(typeId: number) =>
+	(typeId: Pointer) =>
 {
 	if (!(typeId in registry.types)) {
 		console.warn(`typeId=${typeId} not found in registry`)
