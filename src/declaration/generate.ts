@@ -60,18 +60,21 @@ const indent = (text: string) => `\t${text}`
 function declarationForModule(
 		registry: Declaration.Registry
 ) {
-	return [
+	const lines = [
 		"export interface CustomEmbindModule {",
 		...registry.functions.map(declarationForFunction).map(indent),
-		/*...Object.values(registry.classes)
+		/*
+		...Object.values(registry.classes)
 			.map(getClassModuleDeclaration(module,registry))
 			.map(indent),
 		...Object.values(registry.enums)
 			.map(getEnumInterfaceDeclaration(module,registry)),
-		"}",*/
+		*/
+		"}",
 		"declare function factory(): Promise<CustomEmbindModule>;",
 		"export default factory;"
-	].join('\n')
+	]
+	return lines.join('\n')
 }
 
 export function declarationsForRegistry(

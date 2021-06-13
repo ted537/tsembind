@@ -6,8 +6,6 @@ import {EmscriptenModule} from './emscripten'
 import { Registry } from './injection/registry'
 import { emptyHintFunction, HintFunction } from './hint'
 import { convertInjectionRegistryToDeclarationRegistry } from './declaration'
-import { assert } from 'console'
-import * as Injection from './injection'
 import { declarationsForRegistry } from './declaration/generate'
 
 const registries = new Map<WASMExports, Registry>();
