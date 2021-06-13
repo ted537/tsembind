@@ -8,9 +8,9 @@
     "test": "test"
   },
   "scripts": {
-	"test": "node test/generate-d-ts-files.js",
-	"tsc-src": "tsc src/**/*.ts && chmod +x src/cmd.js",
-    "tsc-test": "tsc test/**/*.ts",
+    "test": "node test/generate-d-ts-files.js",
+    "tsc-src": "tsc -p src.tsconfig.json && chmod +x src/cmd.js",
+    "tsc-test": "tsc -p test.tsconfig.json",
     "build": "npm run make && npm run tsc-src",
     "make": "emcmake cmake -S . -B build && emmake make -C build"
   },
