@@ -10,7 +10,8 @@ export interface Function {
 }
 
 export interface Class {
-
+    name: string
+    staticFunctions: Function[]
 }
 
 export interface Enum {

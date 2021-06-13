@@ -56,6 +56,41 @@ function declarationForNumber(name: string) {
 	return `type ${name} = number;`
 }
 
+const staticName = (originalName: string) => `${originalName}Class`
+
+// standalone declaration for class. used for typing
+function memberDeclarationForClass(cppclass: Declaration.Class) {
+	return [
+		`export interface ${cppclass.name} {`,
+
+		'}'
+	].join('\n')
+}
+
+// static declaration for class. used to define type used for access
+function staticDeclarationForClass(cppclass: Declaration.Class): string {
+	const classname = staticName(cppclass.name)
+	return [
+		`interface ${classname} {`,
+		...cppclass.staticFunctions.map(declarationForFunction).map(indent),
+		'}'
+	].join('\n')
+}
+
+function declarationForClass(cppclass: Declaration.Class): string {
+	return [
+		memberDeclarationForClass(cppclass),
+		staticDeclarationForClass(cppclass)
+	].join('\n')
+}
+
+// module declaration for class. used for access
+function moduleDeclarationForClass(cppclass: Declaration.Class) {
+	const {name} = cppclass
+	const staticClassName = staticName(name)
+	return `${name}: ${staticClassName}`
+}
+
 const indent = (text: string) => `\t${text}`
 
 function declarationForModule(
@@ -71,6 +106,7 @@ function declarationForModule(
 		...Object.values(registry.enums)
 			.map(getEnumInterfaceDeclaration(module,registry)),
 		*/
+		...registry.classes.map(moduleDeclarationForClass).map(indent),
 		"}",
 		"declare function factory(): Promise<CustomEmbindModule>;",
 		"export default factory;"
@@ -91,6 +127,7 @@ export function declarationsForRegistry(
 			.map(getClassExternalDeclaration(module,registry)),
 		Object.values(registry.enums)
 			.map(getEnumDeclaration(module,registry)),*/
+		...registry.classes.map(declarationForClass),
 		declarationForModule(registry)
 	].join('\n')
 }

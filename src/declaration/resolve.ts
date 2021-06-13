@@ -19,21 +19,43 @@ function typeIdToTypeName(ctx: DeclarationContext, typeId: Pointer) {
     return ctx.injectionRegistry.types[typeId](ctx.module)
 }
 
+function createParameters(
+        ctx: DeclarationContext, typenames: string[]
+): Declaration.Parameter[] {
+    // TODO inject hints in here
+    return typenames.map(
+        (typename, idx) => ({typename, name: `arg${idx}`})
+    )
+}
+
 // resolve injected function info to a standalone declaration
 const resolveFunction = 
         (ctx: DeclarationContext) =>
-        (injected: Injection.FreeFunction) =>
+        (injected: Injection.FreeFunction): Declaration.Function =>
 {
     const {argCount, rawArgTypesAddr} = injected
     const argTypes = heap32VectorToArray(ctx.module)(argCount, rawArgTypesAddr)
     const argTypeNames = argTypes.map(id => typeIdToTypeName(ctx,id))
     const [returnType, ...parameterTypes] = argTypeNames
-    const parameters = parameterTypes.map(
-        (typename,idx) => ({typename, name: `arg${idx}`})
-    )
-    return <Declaration.Function>{
+    return {
         name: readLatin1String(ctx.module)(injected.name),
-        parameters: parameters
+        parameters: createParameters(ctx,parameterTypes),
+        returnType
+    }
+}
+
+const resolveStaticFunction =
+        (ctx: DeclarationContext) =>
+        (injected: Injection.StaticFunction) =>
+{
+    const {argCount, rawArgTypesAddr} = injected
+    const argTypes = heap32VectorToArray(ctx.module)(argCount, rawArgTypesAddr)
+    const argTypeNames = argTypes.map(id => typeIdToTypeName(ctx,id))
+    const [returnType, instanceType,  ...parameterTypes] = argTypeNames
+    return {
+        name: readLatin1String(ctx.module)(injected.methodName),
+        parameters: createParameters(ctx,parameterTypes),
+        returnType
     }
 }
 
@@ -42,7 +64,8 @@ const resolveClass =
         (injected: Injection.Class): Declaration.Class =>
 {
     return {
-
+        name:readLatin1String(ctx.module)(injected.name),
+        staticFunctions: injected.classFunctions.map(resolveStaticFunction(ctx))
     }
 }
 
