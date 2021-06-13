@@ -6,6 +6,7 @@ export interface Parameter {
 export interface Function {
     name: string
     parameters: Parameter[]
+    returnType: string
 }
 
 export interface Class {

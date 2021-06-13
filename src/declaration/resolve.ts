@@ -61,7 +61,7 @@ const resolveEnum =
     return {name}
 }
 
-export interface DeclarationContext {
+interface DeclarationContext {
     injectionRegistry: Injection.Registry,
     module: EmscriptenModule
 }

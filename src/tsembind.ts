@@ -1,11 +1,14 @@
 import path from 'path'
 import {injectBindings} from './injection/inject'
-import {declarationsForRegistry} from './declarations'
 
 import {WASMExports} from './wasm'
 import {EmscriptenModule} from './emscripten'
 import { Registry } from './injection/registry'
 import { emptyHintFunction, HintFunction } from './hint'
+import { convertInjectionRegistryToDeclarationRegistry } from './declaration'
+import { assert } from 'console'
+import * as Injection from './injection'
+import { declarationsForRegistry } from './declaration/generate'
 
 const registries = new Map<WASMExports, Registry>();
 
@@ -29,10 +32,13 @@ const registryForEmscriptenModule = (module: EmscriptenModule) =>
 	registries.get(module.asm)
 
 const getDeclarations = (module: EmscriptenModule,hint: HintFunction) => {
-	const registry = registryForEmscriptenModule(module);
-	if (!registry)
+	const injectionRegistry = registryForEmscriptenModule(module);
+	if (!injectionRegistry)
 		throw new Error("Cannot find module")
-	return declarationsForRegistry(module,registry,hint)
+	const declarationRegistry = 
+		convertInjectionRegistryToDeclarationRegistry(injectionRegistry, module)
+	
+	return declarationsForRegistry(declarationRegistry)
 }
 
 interface GlobalEmscriptenModule { onRuntimeInitialized: any}
