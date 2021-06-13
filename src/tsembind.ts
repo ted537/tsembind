@@ -1,5 +1,5 @@
 import path from 'path'
-import {injectBindings} from './inject'
+import {injectBindings} from './injection/inject'
 import {declarationsForRegistry} from './declarations'
 
 import {WASMExports} from './wasm'

@@ -1,7 +1,7 @@
-import {readLatin1String, heap32VectorToArray} from './embind.js'
-import { EmscriptenModule } from './emscripten';
-import { Registry } from './injection/registry';
-import {CamelCase} from './string'
+import {readLatin1String, heap32VectorToArray} from '../embind.js'
+import { EmscriptenModule } from '../emscripten';
+import { Registry } from './registry';
+import {CamelCase} from '../string'
 
 const readName = (namePtr:number) => (module: EmscriptenModule) => 
 	readLatin1String(module)(namePtr)

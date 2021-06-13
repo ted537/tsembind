@@ -1,36 +1,39 @@
 import { EmscriptenModule } from "../emscripten";
+import { Nominal } from "../nominal";
+
+type Pointer = Nominal<number, 'pointer'>
 
 export interface FreeFunction {
     name: number
     argCount: number
-    rawArgTypesAddr: number
+    rawArgTypesAddr: Pointer
 }
 
 export interface MemberProperty {
-     fieldName: number, 
-     getterReturnType: number
+     fieldName: Pointer, 
+     getterReturnType: Pointer
 }
 
 export interface MemberFunction {
-    methodName: number;
+    methodName: Pointer;
     argCount: number;
-    rawArgTypesAddr: number;
+    rawArgTypesAddr: Pointer;
 }
 
 export interface Constructor {
     argCount: number;
-    rawArgTypesAddr: number;
+    rawArgTypesAddr: Pointer;
 }
 
 export interface StaticFunction {
-    methodName: number;
+    methodName: Pointer;
     argCount: number;
-    rawArgTypesAddr: number;
+    rawArgTypesAddr: Pointer;
 }
 
 export interface Class {
-    name: number;
-    baseClassRawType: number;
+    name: Pointer;
+    baseClassRawType: Pointer;
 
     properties: MemberProperty[]
     functions: MemberFunction[]
@@ -44,7 +47,7 @@ export interface EnumInfo {
 }
 
 export interface EnumValueInfo {
-    name: number
+    name: Pointer
     enumValue: number
 }
 
