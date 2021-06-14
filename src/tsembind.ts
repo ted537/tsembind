@@ -4,7 +4,7 @@ import {injectBindings} from './injection/inject'
 import {WASMExports} from './wasm'
 import {EmscriptenModule} from './emscripten'
 import { Registry } from './injection/registry'
-import { emptyHintFunction, HintFunction } from './hint'
+import { emptyHintFunction as emptyAnnotator, Annotator as Annotator } from './annotation'
 import { convertInjectionRegistryToDeclarationRegistry } from './declaration'
 import { declarationsForRegistry } from './declaration/generate'
 
@@ -29,13 +29,13 @@ const wrapWebAssemblyInit =
 const registryForEmscriptenModule = (module: EmscriptenModule) =>
 	registries.get(module.asm)
 
-const getDeclarations = (module: EmscriptenModule,hint: HintFunction) => {
+const getDeclarations = (module: EmscriptenModule,annotator: Annotator) => {
 	const injectionRegistry = registryForEmscriptenModule(module);
 	if (!injectionRegistry)
 		throw new Error("Cannot find module")
 	const declarationRegistry = 
 		convertInjectionRegistryToDeclarationRegistry(injectionRegistry, module)
-	
+		
 	return declarationsForRegistry(declarationRegistry)
 }
 
@@ -52,9 +52,9 @@ async function moduleFromRequire(
 }
 
 export async function generateTypescriptBindings(
-		inputFilename: string,hint?: HintFunction
+		inputFilename: string,annotator?: Annotator
 ) {
 	const absoluteInputFilename = path.resolve(process.cwd(),inputFilename)
 	const module = await moduleFromRequire(require(absoluteInputFilename))
-	return getDeclarations(module,hint || emptyHintFunction)
+	return getDeclarations(module,annotator || emptyAnnotator)
 }
