@@ -97,7 +97,7 @@ const resolveClass =
         constructors:
             injected.constructors.map(resolveConstructor(ctx)),
         properties:
-            injected.properties.map(resolveProperty(ctx))
+            injected.properties.map(resolveProperty(ctx)),
     }
 }
 
@@ -121,10 +121,13 @@ const resolveNumber =
 
 const resolveEnum =
         (ctx: DeclarationContext) =>
-        (injected: Injection.EnumInfo) =>
+        (injected: Injection.EnumInfo): Declaration.Enum =>
 {
     const name = injected.getName(ctx.module)
-    return {name}
+    const values = injected.values
+        .map(info => info.name)
+        .map(ptr => readLatin1String(ctx.module)(ptr))
+    return {name,values}
 }
 
 interface DeclarationContext {

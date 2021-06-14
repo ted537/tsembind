@@ -18,43 +18,15 @@ function declarationForProperty(property: Declaration.Property) {
 	return `${name}: ${typename}`
 }
 
-/*
-// identical
-const getEnumInterfaceDeclaration = 
-		(module: EmscriptenModule, registry: Registry) => 
-		(enumInfo: EnumInfo) => 
-{
-	const {getName,values} = enumInfo;
-	const name = getName(module)
-	return `\t${name}: ${name}Enum`
-}
-
-const getEnumValueDeclaration = 
-		(
-			module: EmscriptenModule, registry: Registry,
-			enumName: string
-		) => (valInfo: EnumValueInfo) => {
-	const {name,enumValue} = valInfo;
-	const humanName = readLatin1String(module)(name)
-	return `\t${humanName}: ${enumName},`
-}
-
-const getEnumDeclaration = 
-		(module: EmscriptenModule,registry: Registry) => 
-		(enumInfo: EnumInfo) => 
-{
-	const {getName,values} = enumInfo;
-	const name = getName(module)
+function declarationForEnum(declaredEnum: Declaration.Enum): string {
+	const {name, values} = declaredEnum
 	return [
-		`declare const valid${name}: unique symbol;`,
-		`export interface ${name} {[valid${name}]: true}`,
+		`export interface ${name} {}`,
 		`interface ${name}Enum {`,
-		...enumInfo.values.map(
-			getEnumValueDeclaration(module,registry,name)),
+		...values.map( value => `${value}: ${name}`).map(indent),
 		'}'
 	].join('\n')
 }
-*/
 
 // TS is not responsible for enforcing number sizes (int8 vs int32 etc)
 function declarationForNumber(name: string) {
@@ -108,6 +80,11 @@ function moduleDeclarationForClass(cppclass: Declaration.Class) {
 	return `${name}: ${staticClassName}`
 }
 
+function moduleDeclarationForEnum(declaredEnum: Declaration.Enum) {
+	const {name} = declaredEnum
+	return `${name}: ${name}Enum`
+}
+
 const indent = (text: string) => `\t${text}`
 
 function declarationForModule(
@@ -116,11 +93,8 @@ function declarationForModule(
 	const lines = [
 		"export interface CustomEmbindModule {",
 		...registry.functions.map(declarationForFunction).map(indent),
-		/*
-		...Object.values(registry.enums)
-			.map(getEnumInterfaceDeclaration(module,registry)),
-		*/
 		...registry.classes.map(moduleDeclarationForClass).map(indent),
+		...registry.enums.map(moduleDeclarationForEnum).map(indent),
 		"}",
 		"declare function factory(): Promise<CustomEmbindModule>;",
 		"export default factory;"
@@ -137,10 +111,7 @@ export function declarationsForRegistry(
 		'// define type aliases for various native number types',
 		...registry.numbers.map(declarationForNumber),
 		'',
-		/*Object.values(registry.classes)
-			.map(getClassExternalDeclaration(module,registry)),
-		Object.values(registry.enums)
-			.map(getEnumDeclaration(module,registry)),*/
+		...registry.enums.map(declarationForEnum),
 		...registry.classes.map(declarationForClass),
 		declarationForModule(registry)
 	].join('\n')

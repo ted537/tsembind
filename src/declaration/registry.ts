@@ -28,6 +28,7 @@ export interface Class {
 
 export interface Enum {
     name: string
+    values: string[]
 }
 
 /** Registry with resolved types */
