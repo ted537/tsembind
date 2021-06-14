@@ -43,7 +43,8 @@ const staticName = (originalName: string) => `${originalName}Class`
 function memberDeclarationForClass(cppclass: Declaration.Class) {
 	return [
 		`export interface ${cppclass.name} {`,
-		...cppclass.memberFunctions.map(declarationForFunction).map(indentLines),
+		...cppclass.memberFunctions.map(declarationForFunction)
+			.map(indentLines).map(joinLines),
 		...cppclass.properties.map(declarationForProperty).map(indent),
 		'}'
 	].join('\n')

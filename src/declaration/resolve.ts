@@ -16,7 +16,10 @@ function resolveTypenames(
 }
 
 function typeIdToTypeName(ctx: DeclarationContext, typeId: Pointer) {
-    return ctx.injectionRegistry.types[typeId](ctx.module)
+    const nameGetter: Injection.StringGetter | undefined = 
+        ctx.injectionRegistry.types[typeId]
+    if (nameGetter) return nameGetter(ctx.module)
+    else return 'unknown'
 }
 
 function createParameters(

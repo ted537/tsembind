@@ -2,7 +2,7 @@
   "name": "tsembind",
   "version": "1.0.0",
   "description": "EMBind Typescript Declarations Generator",
-  "main": "src/tsembind.js",
+  "main": "src/index.js",
   "directories": {
     "lib": "lib",
     "test": "test"

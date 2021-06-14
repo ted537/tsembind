@@ -13,7 +13,7 @@ export interface Annotated {
 	comment?: string
 	parameters?: Record<number,ParameterAnnotation>
 }
-export type Annotator = (specifier: Specifier) => Annotated
+export type Annotator = (specifier: Specifier) => Annotated | undefined
 
 export function emptyHintFunction(specifier: Specifier) {
 	return {comment:''}
@@ -25,12 +25,12 @@ export const  annotateFunction =
 {
 	const annotated = annotator(func)
 	const newParameters = func.parameters.map((funcparameter,idx) => ({
-		name: (annotated.parameters||{})[idx]?.name || funcparameter.name,
-		typename: (annotated.parameters||{})[idx]?.typename || funcparameter.typename
+		name: (annotated?.parameters||{})[idx]?.name || funcparameter.name,
+		typename: (annotated?.parameters||{})[idx]?.typename || funcparameter.typename
 	}))
 	return {
 		...func,
-		comment: annotated.comment,
+		comment: annotated?.comment,
 		parameters: newParameters
 	}
 }
