@@ -4,7 +4,7 @@ import {injectBindings} from './injection/inject'
 import {WASMExports} from './wasm'
 import {EmscriptenModule} from './emscripten'
 import { Registry } from './injection/registry'
-import { emptyHintFunction as emptyAnnotator, Annotator as Annotator } from './annotation'
+import { emptyHintFunction as emptyAnnotator, Annotator as Annotator, annotateRegistry } from './annotation'
 import { convertInjectionRegistryToDeclarationRegistry } from './declaration'
 import { declarationsForRegistry } from './declaration/generate'
 
@@ -33,10 +33,13 @@ const getDeclarations = (module: EmscriptenModule,annotator: Annotator) => {
 	const injectionRegistry = registryForEmscriptenModule(module);
 	if (!injectionRegistry)
 		throw new Error("Cannot find module")
+
 	const declarationRegistry = 
 		convertInjectionRegistryToDeclarationRegistry(injectionRegistry, module)
+
+	const annotated = annotateRegistry(declarationRegistry, annotator)
 		
-	return declarationsForRegistry(declarationRegistry)
+	return declarationsForRegistry(annotated)
 }
 
 interface GlobalEmscriptenModule { onRuntimeInitialized: any}

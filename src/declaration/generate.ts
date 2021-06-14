@@ -1,4 +1,5 @@
 // transform declaration registry into typescript declarations
+import { getCommentLines } from '../annotation'
 import * as Declaration from './registry'
 
 function stringifyParameters(parameters: Declaration.Parameter[]): string {
@@ -10,7 +11,10 @@ function stringifyParameters(parameters: Declaration.Parameter[]): string {
 function declarationForFunction(func: Declaration.Function): string {
 	const {name,parameters,returnType} = func
 	const parametersString: string = stringifyParameters(parameters)
-	return `${name}(${parametersString}): ${returnType};`
+	return [
+		...getCommentLines(func.comment),
+		`${name}(${parametersString}): ${returnType};`
+	].join('\n')
 }
 
 function declarationForProperty(property: Declaration.Property) {
@@ -101,6 +105,7 @@ function declarationForModule(
 	]
 	return lines.join('\n')
 }
+
 
 export function declarationsForRegistry(
 		registry: Declaration.Registry

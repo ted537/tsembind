@@ -1,3 +1,5 @@
+import { Annotated } from "../annotation";
+
 export interface Property {
     name: string
     typename: string
@@ -8,7 +10,7 @@ export interface Parameter {
     typename: string
 }
 
-export interface Function {
+export interface Function extends Annotated {
     name: string
     parameters: Parameter[]
     returnType: string
