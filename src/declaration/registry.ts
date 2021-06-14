@@ -1,3 +1,8 @@
+export interface Property {
+    name: string
+    typename: string
+}
+
 export interface Parameter {
     name: string
     typename: string
@@ -18,6 +23,7 @@ export interface Class {
     staticFunctions: Function[]
     memberFunctions: Function[]
     constructors: Constructor[]
+    properties: Property[]
 }
 
 export interface Enum {

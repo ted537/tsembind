@@ -6,7 +6,7 @@ export interface FreeFunction {
     rawArgTypesAddr: Pointer
 }
 
-export interface MemberProperty {
+export interface Property {
      fieldName: Pointer, 
      getterReturnType: Pointer
 }
@@ -32,7 +32,7 @@ export interface Class {
     name: Pointer;
     baseClassRawType: Pointer;
 
-    properties: MemberProperty[]
+    properties: Property[]
     functions: MemberFunction[]
     classFunctions: StaticFunction[]
     constructors: Constructor[]

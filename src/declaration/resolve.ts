@@ -74,6 +74,16 @@ const resolveMemberFunction =
     }
 }
 
+const resolveProperty = 
+        (ctx: DeclarationContext) =>
+        (injected: Injection.Property): Declaration.Property =>
+{
+    const {fieldName,getterReturnType} = injected
+    const typename = ctx.typenames[getterReturnType]
+    const name = readLatin1String(ctx.module)(fieldName)
+    return {name,typename}
+}
+
 const resolveClass = 
         (ctx: DeclarationContext) =>
         (injected: Injection.Class): Declaration.Class =>
@@ -85,7 +95,9 @@ const resolveClass =
         memberFunctions:
             injected.functions.map(resolveMemberFunction(ctx)),
         constructors:
-            injected.constructors.map(resolveConstructor(ctx))
+            injected.constructors.map(resolveConstructor(ctx)),
+        properties:
+            injected.properties.map(resolveProperty(ctx))
     }
 }
 
@@ -117,7 +129,8 @@ const resolveEnum =
 
 interface DeclarationContext {
     injectionRegistry: Injection.Registry,
-    module: EmscriptenModule
+    module: EmscriptenModule,
+    typenames: Record<Pointer,string>
 }
 export function convertInjectionRegistryToDeclarationRegistry(
         injectionRegistry: Injection.Registry, module: EmscriptenModule

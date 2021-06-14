@@ -13,6 +13,11 @@ function declarationForFunction(func: Declaration.Function): string {
 	return `${name}(${parametersString}): ${returnType};`
 }
 
+function declarationForProperty(property: Declaration.Property) {
+	const {name,typename} = property
+	return `${name}: ${typename}`
+}
+
 /*
 // identical
 const getEnumInterfaceDeclaration = 
@@ -62,7 +67,8 @@ const staticName = (originalName: string) => `${originalName}Class`
 function memberDeclarationForClass(cppclass: Declaration.Class) {
 	return [
 		`export interface ${cppclass.name} {`,
-
+		...cppclass.memberFunctions.map(declarationForFunction).map(indent),
+		...cppclass.properties.map(declarationForProperty).map(indent),
 		'}'
 	].join('\n')
 }
@@ -111,9 +117,6 @@ function declarationForModule(
 		"export interface CustomEmbindModule {",
 		...registry.functions.map(declarationForFunction).map(indent),
 		/*
-		...Object.values(registry.classes)
-			.map(getClassModuleDeclaration(module,registry))
-			.map(indent),
 		...Object.values(registry.enums)
 			.map(getEnumInterfaceDeclaration(module,registry)),
 		*/

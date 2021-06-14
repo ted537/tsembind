@@ -8,6 +8,8 @@ class A {
 };
 
 EMSCRIPTEN_BINDINGS(classproperty) {
-	class_<A>("A").
-		property("x",&A::x);
+	class_<A>("A")
+		.constructor<>()
+		.property("x",&A::x)
+		;
 }

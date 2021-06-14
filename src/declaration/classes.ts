@@ -3,7 +3,7 @@
 //    this type holds instance-level things such as functions and members
 
 import { EmscriptenModule } from "../emscripten";
-import { StaticFunction, Constructor, MemberFunction, Class, MemberProperty, FreeFunction, Registry } from "../injection/registry";
+import { StaticFunction, Constructor, MemberFunction, Class, Property, FreeFunction, Registry } from "../injection/registry";
 
 // 2) internal class with constructors / static functions.
 //    this is what is actually attached to the module instance
@@ -113,7 +113,7 @@ const getClassClassFunctionDeclaration =
 
 const getClassPropertyDeclaration = 
 		(module: EmscriptenModule, registry: Registry) => 
-		(propertyInfo: MemberProperty) => {
+		(propertyInfo: Property) => {
 	const {fieldName,getterReturnType} = propertyInfo;
 	const typename = typeIdToTypeName(module,registry)(getterReturnType)
 	const name = readLatin1String(module)(fieldName)
