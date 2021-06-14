@@ -35,13 +35,27 @@ export const  annotateFunction =
 	}
 }
 
+export const annotateClass = 
+		(annotator: Annotator) =>
+		(cppclass: Declaration.Class): Declaration.Class =>
+{
+	return {
+		...cppclass,
+		staticFunctions: 
+			cppclass.staticFunctions.map(annotateFunction(annotator)),
+		memberFunctions:
+			cppclass.memberFunctions.map(annotateFunction(annotator))
+	}
+}
+
 // mutates
 export function annotateRegistry(
 		registry: Declaration.Registry, annotator: Annotator
 ): Declaration.Registry {
 	return {
 		...registry,
-		functions: registry.functions.map(annotateFunction(annotator))
+		functions: registry.functions.map(annotateFunction(annotator)),
+		classes: registry.classes.map(annotateClass(annotator))
 	}
 }
 

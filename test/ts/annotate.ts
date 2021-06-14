@@ -8,7 +8,7 @@ const annotate: Annotator = ({name}) => ({
 
 async function main() {
     const bindings = 
-        await generateTypescriptBindings('./test/lib/sum.js', annotate)
+        await generateTypescriptBindings('./test/lib/classclassmethod.js', annotate)
     console.log(bindings)
 }
 main()
