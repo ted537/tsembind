@@ -67,12 +67,23 @@ function memberDeclarationForClass(cppclass: Declaration.Class) {
 	].join('\n')
 }
 
+const declarationForConstructor =
+		(cppclass: Declaration.Class) =>
+		(constructor: Declaration.Constructor): string => 
+{
+	const params = stringifyParameters(constructor.parameters)
+	const {name} = cppclass
+	return `new (${params}): ${name};`
+}
+
 // static declaration for class. used to define type used for access
 function staticDeclarationForClass(cppclass: Declaration.Class): string {
 	const classname = staticName(cppclass.name)
 	return [
 		`interface ${classname} {`,
 		...cppclass.staticFunctions.map(declarationForFunction).map(indent),
+		...cppclass.constructors
+			.map(declarationForConstructor(cppclass)).map(indent),
 		'}'
 	].join('\n')
 }

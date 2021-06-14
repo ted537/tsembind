@@ -9,9 +9,15 @@ export interface Function {
     returnType: string
 }
 
+export interface Constructor {
+    parameters: Parameter[]
+}
+
 export interface Class {
     name: string
     staticFunctions: Function[]
+    memberFunctions: Function[]
+    constructors: Constructor[]
 }
 
 export interface Enum {

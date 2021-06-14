@@ -51,6 +51,21 @@ const resolveStaticFunction =
     const {argCount, rawArgTypesAddr} = injected
     const argTypes = heap32VectorToArray(ctx.module)(argCount, rawArgTypesAddr)
     const argTypeNames = argTypes.map(id => typeIdToTypeName(ctx,id))
+    const [returnType,  ...parameterTypes] = argTypeNames
+    return {
+        name: readLatin1String(ctx.module)(injected.methodName),
+        parameters: createParameters(ctx,parameterTypes),
+        returnType
+    }
+}
+
+const resolveMemberFunction =
+        (ctx: DeclarationContext) =>
+        (injected: Injection.StaticFunction) =>
+{
+    const {argCount, rawArgTypesAddr} = injected
+    const argTypes = heap32VectorToArray(ctx.module)(argCount, rawArgTypesAddr)
+    const argTypeNames = argTypes.map(id => typeIdToTypeName(ctx,id))
     const [returnType, instanceType,  ...parameterTypes] = argTypeNames
     return {
         name: readLatin1String(ctx.module)(injected.methodName),
@@ -65,8 +80,24 @@ const resolveClass =
 {
     return {
         name:readLatin1String(ctx.module)(injected.name),
-        staticFunctions: injected.classFunctions.map(resolveStaticFunction(ctx))
+        staticFunctions: 
+            injected.classFunctions.map(resolveStaticFunction(ctx)),
+        memberFunctions:
+            injected.functions.map(resolveMemberFunction(ctx)),
+        constructors:
+            injected.constructors.map(resolveConstructor(ctx))
     }
+}
+
+const resolveConstructor = 
+        (ctx: DeclarationContext) =>
+        (injected: Injection.Constructor): Declaration.Constructor =>
+{
+    const {argCount, rawArgTypesAddr} = injected
+    const argTypes = heap32VectorToArray(ctx.module)(argCount, rawArgTypesAddr)
+    const argTypeNames = argTypes.map(id => typeIdToTypeName(ctx,id))
+    const [returnType,  ...parameterTypes] = argTypeNames
+    return {parameters: createParameters(ctx, parameterTypes)}
 }
 
 const resolveNumber =
