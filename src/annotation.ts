@@ -3,8 +3,15 @@ import * as Declaration from './declaration'
 export interface Specifier {
 	name: string
 }
+
+export interface ParameterAnnotation {
+	name?: string
+	typename?: string
+}
+
 export interface Annotated {
 	comment?: string
+	parameters?: Record<number,ParameterAnnotation>
 }
 export type Annotator = (specifier: Specifier) => Annotated
 
@@ -12,20 +19,29 @@ export function emptyHintFunction(specifier: Specifier) {
 	return {comment:''}
 }
 
-const makeAnnotate = 
-	(annotator: Annotator) => 
-	<T extends Specifier> (declared: T): T & Annotated =>
-
-	({...declared, ...annotator(declared)})
+export const  annotateFunction =
+		(annotator: Annotator) => 
+		(func: Declaration.Function): Declaration.Function => 
+{
+	const annotated = annotator(func)
+	const newParameters = func.parameters.map((funcparameter,idx) => ({
+		name: (annotated.parameters||{})[idx]?.name || funcparameter.name,
+		typename: (annotated.parameters||{})[idx]?.typename || funcparameter.typename
+	}))
+	return {
+		...func,
+		comment: annotated.comment,
+		parameters: newParameters
+	}
+}
 
 // mutates
 export function annotateRegistry(
 		registry: Declaration.Registry, annotator: Annotator
 ): Declaration.Registry {
-	const annotate = makeAnnotate(annotator)
 	return {
 		...registry,
-		functions: registry.functions.map(annotate)
+		functions: registry.functions.map(annotateFunction(annotator))
 	}
 }
 
