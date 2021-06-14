@@ -8,13 +8,13 @@ function stringifyParameters(parameters: Declaration.Parameter[]): string {
 	).join(', ')
 }
 
-function declarationForFunction(func: Declaration.Function): string {
+function declarationForFunction(func: Declaration.Function): string[] {
 	const {name,parameters,returnType} = func
 	const parametersString: string = stringifyParameters(parameters)
 	return [
 		...getCommentLines(func.comment),
 		`${name}(${parametersString}): ${returnType};`
-	].join('\n')
+	]
 }
 
 function declarationForProperty(property: Declaration.Property) {
@@ -43,7 +43,7 @@ const staticName = (originalName: string) => `${originalName}Class`
 function memberDeclarationForClass(cppclass: Declaration.Class) {
 	return [
 		`export interface ${cppclass.name} {`,
-		...cppclass.memberFunctions.map(declarationForFunction).map(indent),
+		...cppclass.memberFunctions.map(declarationForFunction).map(indentLines),
 		...cppclass.properties.map(declarationForProperty).map(indent),
 		'}'
 	].join('\n')
@@ -63,7 +63,10 @@ function staticDeclarationForClass(cppclass: Declaration.Class): string {
 	const classname = staticName(cppclass.name)
 	return [
 		`interface ${classname} {`,
-		...cppclass.staticFunctions.map(declarationForFunction).map(indent),
+		...cppclass.staticFunctions
+			.map(declarationForFunction)
+			.map(indentLines)
+			.map(joinLines),
 		...cppclass.constructors
 			.map(declarationForConstructor(cppclass)).map(indent),
 		'}'
@@ -90,13 +93,16 @@ function moduleDeclarationForEnum(declaredEnum: Declaration.Enum) {
 }
 
 const indent = (text: string) => `\t${text}`
+const indentLines = (lines: string[]): string[] => lines.map(indent)
+const joinLines = (lines: string[]): string => lines.join('\n')
 
 function declarationForModule(
 		registry: Declaration.Registry
 ) {
 	const lines = [
 		"export interface CustomEmbindModule {",
-		...registry.functions.map(declarationForFunction).map(indent),
+		...registry.functions.map(declarationForFunction)
+			.map(indentLines).map(joinLines),
 		...registry.classes.map(moduleDeclarationForClass).map(indent),
 		...registry.enums.map(moduleDeclarationForEnum).map(indent),
 		"}",
