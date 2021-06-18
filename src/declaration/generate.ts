@@ -42,6 +42,7 @@ const staticName = (originalName: string) => `${originalName}Class`
 // standalone declaration for class. used for typing
 function memberDeclarationForClass(cppclass: Declaration.Class) {
 	return [
+		...getCommentLines(cppclass.comment),
 		`export interface ${cppclass.name} {`,
 		...cppclass.memberFunctions.map(declarationForFunction)
 			.map(indentLines).map(joinLines),
