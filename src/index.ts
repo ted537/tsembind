@@ -1,2 +1,4 @@
 export * from './tsembind'
-export * as Annotation from './annotation'
+import * as Annotation from './annotation'
+
+export {Annotation}

@@ -42,6 +42,7 @@ export const annotateClass =
 {
 	return {
 		...cppclass,
+		comment: annotator(cppclass)?.comment,
 		staticFunctions: 
 			cppclass.staticFunctions.map(annotateFunction(annotator)),
 		memberFunctions:
