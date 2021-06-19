@@ -11,6 +11,7 @@ export interface ParameterAnnotation {
 
 export interface Annotated {
 	comment?: string
+	name?: string
 	parameters?: Record<number,ParameterAnnotation>
 }
 export type Annotator = (specifier: Specifier) => Annotated | undefined
@@ -55,7 +56,9 @@ export function annotateRegistry(
 	return {
 		...registry,
 		functions: registry.functions.map(annotateFunction(annotator)),
-		classes: registry.classes.map(annotateClass(annotator))
+		classes: registry.classes.map(annotateClass(annotator)),
+		moduleName: 
+			annotator({name:registry.moduleName})?.name || registry.moduleName
 	}
 }
 

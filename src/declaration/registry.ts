@@ -35,6 +35,7 @@ export interface Enum {
 
 /** Registry with resolved types */
 export interface Registry {
+    moduleName: string
     functions: Function[]
     classes: Class[]
     numbers: string[]

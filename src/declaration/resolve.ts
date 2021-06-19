@@ -148,6 +148,7 @@ export function convertInjectionRegistryToDeclarationRegistry(
     const classes = Object.values(injectionRegistry.classes)
     const enums = Object.values(injectionRegistry.enums)
     return {
+        moduleName: 'CustomEmbindModule',
         functions: injectionRegistry.functions.map(resolveFunction(ctx)),
         classes: classes.map(resolveClass(ctx)),
         numbers: injectionRegistry.numbers.map(resolveNumber(ctx)),

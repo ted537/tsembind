@@ -54,8 +54,9 @@ async function moduleFromRequire(
 	}
 }
 
+
 export async function generateTypescriptBindings(
-		inputFilename: string,annotator?: Annotator
+		inputFilename: string, annotator?: Annotator
 ) {
 	const absoluteInputFilename = path.resolve(process.cwd(),inputFilename)
 	const module = await moduleFromRequire(require(absoluteInputFilename))

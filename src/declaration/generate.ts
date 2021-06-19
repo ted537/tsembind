@@ -100,14 +100,15 @@ const joinLines = (lines: string[]): string => lines.join('\n')
 function declarationForModule(
 		registry: Declaration.Registry
 ) {
+	const {moduleName} = registry;
 	const lines = [
-		"export interface CustomEmbindModule {",
+		`export interface ${moduleName} {`,
 		...registry.functions.map(declarationForFunction)
 			.map(indentLines).map(joinLines),
 		...registry.classes.map(moduleDeclarationForClass).map(indent),
 		...registry.enums.map(moduleDeclarationForEnum).map(indent),
 		"}",
-		"declare function factory(): Promise<CustomEmbindModule>;",
+		`declare function factory(): Promise<${moduleName}>;`,
 		"export default factory;"
 	]
 	return lines.join('\n')
