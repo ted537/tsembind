@@ -12,7 +12,8 @@
     "tsc-src": "tsc -p src.tsconfig.json && chmod +x src/cmd.js",
     "tsc-test": "tsc -p test.tsconfig.json",
     "build": "npm run make && npm run tsc-src",
-    "make": "emcmake cmake -S . -B build && emmake make -C build"
+    "make": "emcmake cmake -S . -B build && emmake make -C build",
+	"prepare": "npm run tsc-src"
   },
   "repository": {
     "type": "git",
