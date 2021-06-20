@@ -47,6 +47,7 @@ function memberDeclarationForClass(cppclass: Declaration.Class) {
 		...cppclass.memberFunctions.map(declarationForFunction)
 			.map(indentLines).map(joinLines),
 		...cppclass.properties.map(declarationForProperty).map(indent),
+		'\tdelete(): void;',
 		'}'
 	].join('\n')
 }
