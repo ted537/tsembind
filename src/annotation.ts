@@ -13,6 +13,7 @@ export interface Annotated {
 	comment?: string
 	name?: string
 	parameters?: Record<number,ParameterAnnotation>
+	shouldExport?: boolean
 }
 export type Annotator = (specifier: Specifier) => Annotated | undefined
 
@@ -50,6 +51,17 @@ export const annotateClass =
 	}
 }
 
+export const annotateEnum = 
+		(annotator: Annotator) =>
+		(declaredEnum: Declaration.Enum): Declaration.Enum =>
+{
+	const annotated = annotator(declaredEnum)
+	return {
+		...declaredEnum,
+		shouldExport: annotated?.shouldExport
+	}
+}
+
 // mutates
 export function annotateRegistry(
 		registry: Declaration.Registry, annotator: Annotator
@@ -59,7 +71,8 @@ export function annotateRegistry(
 		functions: registry.functions.map(annotateFunction(annotator)),
 		classes: registry.classes.map(annotateClass(annotator)),
 		moduleName: 
-			annotator({name:registry.moduleName})?.name || registry.moduleName
+			annotator({name:registry.moduleName})?.name || registry.moduleName,
+		enums: registry.enums.map(annotateEnum(annotator))
 	}
 }
 

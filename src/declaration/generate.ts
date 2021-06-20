@@ -8,14 +8,19 @@ function stringifyParameters(parameters: Declaration.Parameter[]): string {
 	).join(', ')
 }
 
-function declarationForFunction(func: Declaration.Function): string[] {
+const declarationForFunction =
+	(prefix: string) =>
+	(func: Declaration.Function): string[] => 
+{
 	const {name,parameters,returnType} = func
 	const parametersString: string = stringifyParameters(parameters)
 	return [
 		...getCommentLines(func.comment),
-		`${name}(${parametersString}): ${returnType};`
+		`${prefix}${name}(${parametersString}): ${returnType};`
 	]
 }
+const declarationForMemberFunction = declarationForFunction('')
+const declarationForStaticFunction = declarationForFunction('static ')
 
 function declarationForProperty(property: Declaration.Property) {
 	const {name,typename} = property
@@ -24,8 +29,9 @@ function declarationForProperty(property: Declaration.Property) {
 
 function declarationForEnum(declaredEnum: Declaration.Enum): string {
 	const {name, values} = declaredEnum
+	const maybeExport: string = declaredEnum.shouldExport ? 'export' : ''
 	return [
-		`export interface ${name} {}`,
+		`${maybeExport} interface ${name} {}`,
 		`interface ${name}Enum {`,
 		...values.map( value => `${value}: ${name}`).map(indent),
 		'}'
@@ -37,14 +43,15 @@ function declarationForNumber(name: string) {
 	return `type ${name} = number;`
 }
 
-const staticName = (originalName: string) => `${originalName}Class`
-
 // standalone declaration for class. used for typing
-function memberDeclarationForClass(cppclass: Declaration.Class) {
+function declarationForClass(cppclass: Declaration.Class) {
 	return [
 		...getCommentLines(cppclass.comment),
-		`export interface ${cppclass.name} {`,
-		...cppclass.memberFunctions.map(declarationForFunction)
+		`export class ${cppclass.name} {`,
+		...cppclass.constructors.map(declarationForConstructor(cppclass)),
+		...cppclass.memberFunctions.map(declarationForMemberFunction)
+			.map(indentLines).map(joinLines),
+		...cppclass.staticFunctions.map(declarationForStaticFunction)
 			.map(indentLines).map(joinLines),
 		...cppclass.properties.map(declarationForProperty).map(indent),
 		'\tdelete(): void;',
@@ -58,36 +65,13 @@ const declarationForConstructor =
 {
 	const params = stringifyParameters(constructor.parameters)
 	const {name} = cppclass
-	return `new (${params}): ${name};`
-}
-
-// static declaration for class. used to define type used for access
-function staticDeclarationForClass(cppclass: Declaration.Class): string {
-	const classname = staticName(cppclass.name)
-	return [
-		`interface ${classname} {`,
-		...cppclass.staticFunctions
-			.map(declarationForFunction)
-			.map(indentLines)
-			.map(joinLines),
-		...cppclass.constructors
-			.map(declarationForConstructor(cppclass)).map(indent),
-		'}'
-	].join('\n')
-}
-
-function declarationForClass(cppclass: Declaration.Class): string {
-	return [
-		memberDeclarationForClass(cppclass),
-		staticDeclarationForClass(cppclass)
-	].join('\n')
+	return `constructor(${params}): ${name};`
 }
 
 // module declaration for class. used for access
 function moduleDeclarationForClass(cppclass: Declaration.Class) {
 	const {name} = cppclass
-	const staticClassName = staticName(name)
-	return `${name}: ${staticClassName}`
+	return `${name}: typeof ${name}`
 }
 
 function moduleDeclarationForEnum(declaredEnum: Declaration.Enum) {
@@ -105,7 +89,7 @@ function declarationForModule(
 	const {moduleName} = registry;
 	const lines = [
 		`export interface ${moduleName} {`,
-		...registry.functions.map(declarationForFunction)
+		...registry.functions.map(declarationForMemberFunction)
 			.map(indentLines).map(joinLines),
 		...registry.classes.map(moduleDeclarationForClass).map(indent),
 		...registry.enums.map(moduleDeclarationForEnum).map(indent),

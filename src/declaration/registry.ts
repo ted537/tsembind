@@ -28,7 +28,7 @@ export interface Class extends Annotated {
     properties: Property[]
 }
 
-export interface Enum {
+export interface Enum extends Annotated {
     name: string
     values: string[]
 }
