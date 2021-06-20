@@ -58,7 +58,9 @@ export const annotateEnum =
 	const annotated = annotator(declaredEnum)
 	return {
 		...declaredEnum,
-		shouldExport: annotated?.shouldExport
+		// export by default, ignore if specified
+		shouldExport: 
+			annotated?.shouldExport!=null ? annotated.shouldExport : true
 	}
 }
 

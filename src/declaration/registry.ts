@@ -28,9 +28,14 @@ export interface Class extends Annotated {
     properties: Property[]
 }
 
+export interface EnumValue {
+	name: string
+	value: number
+}
+
 export interface Enum extends Annotated {
     name: string
-    values: string[]
+    values: EnumValue[]
 }
 
 /** Registry with resolved types */

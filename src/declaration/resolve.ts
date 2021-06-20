@@ -127,9 +127,12 @@ const resolveEnum =
         (injected: Injection.EnumInfo): Declaration.Enum =>
 {
     const name = injected.getName(ctx.module)
-    const values = injected.values
-        .map(info => info.name)
-        .map(ptr => readLatin1String(ctx.module)(ptr))
+    const values = injected.values.map(
+		({name,enumValue}) => ({
+			name: readLatin1String(ctx.module)(name),
+			value: enumValue
+		})
+	)
     return {name,values}
 }
 

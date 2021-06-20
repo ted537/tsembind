@@ -31,9 +31,8 @@ function declarationForEnum(declaredEnum: Declaration.Enum): string {
 	const {name, values} = declaredEnum
 	const maybeExport: string = declaredEnum.shouldExport ? 'export' : ''
 	return [
-		`${maybeExport} interface ${name} {}`,
-		`interface ${name}Enum {`,
-		...values.map( value => `${value}: ${name}`).map(indent),
+		`${maybeExport} enum ${name} {`,
+		...values.map( ({name,value}) => `${name} = ${value},`).map(indent),
 		'}'
 	].join('\n')
 }
@@ -76,7 +75,7 @@ function moduleDeclarationForClass(cppclass: Declaration.Class) {
 
 function moduleDeclarationForEnum(declaredEnum: Declaration.Enum) {
 	const {name} = declaredEnum
-	return `${name}: ${name}Enum`
+	return `${name}: typeof ${name}`
 }
 
 const indent = (text: string) => `\t${text}`
