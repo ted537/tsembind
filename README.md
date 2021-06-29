@@ -8,7 +8,7 @@ Re-compiling is not necessary!
 
 Installation:
 ```
-npm i -g git+https://github.com/ted537/tsembind.git
+npm i -g tsembind
 ```
 
 Usage:
