@@ -1,12 +1,13 @@
 {
   "name": "tsembind",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "EMBind Typescript Declarations Generator",
   "main": "src/index.js",
   "directories": {
     "lib": "lib",
     "test": "test"
   },
+  "files": [ "src/**/*.js", "src/**/*.ts", "tsconfig.json" ],
   "scripts": {
     "test": "node test/generate-d-ts-files.js",
     "tsc-src": "tsc -p src.tsconfig.json && chmod +x src/cmd.js",
@@ -33,8 +34,8 @@
   },
   "devDependencies": {
     "@types/mocha": "^8.2.2",
+    "typescript": "^4.3.2",
     "@types/node": "^15.3.0",
-    "mocha": "^8.4.0",
-    "typescript": "^4.3.2"
+    "mocha": "^8.4.0"
   }
 }
