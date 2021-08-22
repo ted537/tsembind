@@ -64,7 +64,7 @@ const declarationForConstructor =
 {
 	const params = stringifyParameters(constructor.parameters)
 	const {name} = cppclass
-	return `constructor(${params}): ${name};`
+	return `constructor(${params});`
 }
 
 // module declaration for class. used for access
