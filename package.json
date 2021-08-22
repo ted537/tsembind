@@ -1,6 +1,6 @@
 {
   "name": "tsembind",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "EMBind Typescript Declarations Generator",
   "main": "src/index.js",
   "directories": {
