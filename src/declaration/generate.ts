@@ -46,7 +46,7 @@ function declarationForNumber(name: string) {
 function declarationForClass(cppclass: Declaration.Class) {
 	return [
 		...getCommentLines(cppclass.comment),
-		`export class ${cppclass.name} {`,
+		cppclass.base ? `export class ${cppclass.name} extends ${cppclass.base} {` : `export class ${cppclass.name} {`,
 		...cppclass.constructors.map(declarationForConstructor(cppclass)),
 		...cppclass.memberFunctions.map(declarationForMemberFunction)
 			.map(indentLines).map(joinLines),

@@ -93,6 +93,7 @@ const resolveClass =
 {
     return {
         name:readLatin1String(ctx.module)(injected.name),
+        base:ctx.typenames[injected.baseClassRawType],
         staticFunctions: 
             injected.classFunctions.map(resolveStaticFunction(ctx)),
         memberFunctions:

@@ -22,6 +22,7 @@ export interface Constructor {
 
 export interface Class extends Annotated {
     name: string
+    base: string
     staticFunctions: Function[]
     memberFunctions: Function[]
     constructors: Constructor[]

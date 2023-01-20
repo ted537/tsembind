@@ -17,6 +17,7 @@ add_executable(sum test/cc/sum.cc)
 add_executable(emptyclass test/cc/empty_class.cc)
 add_executable(subclass test/cc/subclass.cc)
 add_executable(smartptr test/cc/smart_ptr.cc)
+add_executable(subclass_smartptr test/cc/subclass_smart_ptr.cc)
 add_executable(emptyenum test/cc/empty_enum.cc)
 add_executable(enum1 test/cc/enum1.cc)
 add_executable(enum2 test/cc/enum2.cc)
@@ -37,7 +38,7 @@ foreach(executable IN ITEMS
 		# classes
 		emptyclass constructor constructor_args subclass
 		classmethod classclassmethod classmethodmultiparam classproperty
-		smartptr
+		smartptr subclass_smartptr
 		# enums
 		emptyenum enum1 enum2
 )
