@@ -27,6 +27,7 @@ add_executable(classmethod test/cc/class_method.cc)
 add_executable(classproperty test/cc/class_property.cc)
 add_executable(classclassmethod test/cc/class_class_method.cc)
 add_executable(classmethodmultiparam test/cc/class_method_multi_param.cc)
+add_executable(symbol_method test/cc/symbol_method.cc)
 
 foreach(executable IN ITEMS 
 		# general
@@ -41,6 +42,8 @@ foreach(executable IN ITEMS
 		smartptr subclass_smartptr
 		# enums
 		emptyenum enum1 enum2
+		# symbols
+		symbol_method
 )
 	target_link_options(${executable} PUBLIC
 		-s MODULARIZE --bind
