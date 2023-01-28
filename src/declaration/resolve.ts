@@ -70,8 +70,17 @@ const resolveMemberFunction =
     const argTypes = heap32VectorToArray(ctx.module)(argCount, rawArgTypesAddr)
     const argTypeNames = argTypes.map(id => typeIdToTypeName(ctx,id))
     const [returnType, instanceType,  ...parameterTypes] = argTypeNames
+
+    let name = readLatin1String(ctx.module)(injected.methodName)
+
+    // In embind, anything prefixed with '@@' is bound using the named symbol 'Symbol'.
+	// See https://emscripten.org/docs/api_reference/bind.h.html#_CPPv4NK6class_8functionEv
+	if (name.startsWith('@@')) {
+		name = `[Symbol.${name.substring(2)}]`
+	}
+
     return {
-        name: readLatin1String(ctx.module)(injected.methodName),
+        name,
         parameters: createParameters(ctx,parameterTypes),
         returnType
     }
