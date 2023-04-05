@@ -152,6 +152,8 @@ wrappers['_embind_register_memory_view'] =
         Uint32Array,
         Float32Array,
         Float64Array,
+        BigInt64Array,
+        BigUint64Array,
     ];
 	const type = typeMapping[dataTypeIndex];
 	registry.types[rawType] = () => type.name;
